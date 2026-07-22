@@ -158,7 +158,7 @@ export default function Verify() {
                   <AlertCircle size={13} className="text-white/30 shrink-0 mt-0.5" />
                   <p className="text-xs text-white/40 leading-relaxed">
                     You need {(COST - etrBalance).toFixed(4)} more PTC.
-                    Convert your Gems on the <button onClick={() => navigate("/convert")} className="text-primary underline">Convert page</button> to earn PTC.
+                    Convert your Gems in <button onClick={() => navigate("/wallet/convert")} className="text-primary underline">Wallet → Convert Gems</button> to earn PTC.
                   </p>
                 </div>
               )}

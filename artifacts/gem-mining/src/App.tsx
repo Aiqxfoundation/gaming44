@@ -114,7 +114,8 @@ function Router() {
       {/* Other protected routes */}
       <Route path="/mining"><RequireAuth component={Mining} /></Route>
       <Route path="/levels"><RequireAuth component={Levels} /></Route>
-      <Route path="/convert"><RequireAuth component={Convert} /></Route>
+      <Route path="/wallet/convert"><RequireAuth component={Convert} /></Route>
+      <Route path="/convert"><Redirect to="/wallet/convert" /></Route>
       <Route path="/referral"><RequireAuth component={Referral} /></Route>
       <Route path="/profile"><RequireAuth component={Profile} /></Route>
       <Route path="/verify"><RequireAuth component={Verify} /></Route>

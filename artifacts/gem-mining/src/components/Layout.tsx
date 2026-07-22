@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useLocation } from "wouter";
 import {
-  Pickaxe, ArrowRightLeft, Wallet, Users, UserCircle,
+  Pickaxe, Wallet, Users, UserCircle,
   ShieldAlert, LogOut, X, Layers, Info, FileText,
   Shield, ScrollText, Zap, Gem, BarChart3, ChevronRight,
   BookOpen, Globe
@@ -15,7 +15,6 @@ import { motion, AnimatePresence } from "framer-motion";
 const BOTTOM_TABS = [
   { href: "/mining",   label: "Mine",    icon: Pickaxe },
   { href: "/levels",   label: "Levels",  icon: Layers },
-  { href: "/convert",  label: "Convert", icon: ArrowRightLeft },
   { href: "/wallet",   label: "Wallet",  icon: Wallet },
   { href: "/referral", label: "Refer",   icon: Users },
   { href: "/profile",  label: "Profile", icon: UserCircle },
@@ -129,7 +128,7 @@ const INFO_CONTENT: Record<string, { title: string; content: React.ReactNode }> 
           <p className="text-xs text-white/40 mt-1">Rate adjusts dynamically after 1M PTC converted (Halving)</p>
         </div>
         <p><span className="text-white font-semibold">What are Gems?</span> Peridot Gems are the in-platform mining reward unit. They accumulate in real-time during active mining sessions and are stored in your gem balance.</p>
-        <p><span className="text-white font-semibold">Converting Gems to PTC:</span> Head to the Convert page to exchange your accumulated gems for PTC tokens at the current rate. PTC is credited instantly to your wallet balance.</p>
+        <p><span className="text-white font-semibold">Converting Gems to PTC:</span> Head to Wallet → Convert Gems to exchange your accumulated gems for PTC tokens at the current rate. PTC is credited instantly to your wallet balance.</p>
         <p><span className="text-white font-semibold">Dynamic Halving:</span> Once 1,000,000 PTC has been converted by all users platform-wide, the conversion rate doubles. This creates natural scarcity and rewards early participants.</p>
         <div className="space-y-1">
           {[

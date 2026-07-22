@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { notify } from "@/lib/notify";
 import { useGetMiningStatus, useClaimGems, useStartMining } from "@workspace/api-client-react";
 import { formatGems } from "@/lib/utils";
-import { ChevronRight, TrendingUp, Clock, BarChart3, Pickaxe, Sparkles } from "lucide-react";
+import { Clock, BarChart3, Pickaxe, Sparkles } from "lucide-react";
 import { useLocation } from "wouter";
 import { GemIcon } from "@/components/GemIcon";
 
@@ -29,11 +29,6 @@ interface ExtendedMiningStatus {
   isMiningActive: boolean;
   timeRemainingMs: number;
 }
-
-const LEVEL_NAMES = [
-  "Free Node", "Miner I", "Miner II", "Miner III",
-  "Senior Miner", "Master Miner", "Elite Miner", "Sovereign",
-];
 
 // ─── Smooth real-time gem counter ──────────────────────────────────────────────
 function useSmoothGems(
@@ -642,101 +637,6 @@ export default function Mining() {
           />
         )}
       </AnimatePresence>
-
-      {/* ── Active mining status card ── */}
-      <AnimatePresence>
-        {isMiningActive && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 6 }}
-            transition={{ delay: 0.07 }}
-            className="relative rounded-2xl overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, rgba(249,115,22,0.07) 0%, rgba(249,115,22,0.03) 100%)",
-              border: "1px solid rgba(249,115,22,0.15)",
-            }}
-          >
-            <div className="flex items-center gap-3.5 px-4 py-3.5">
-              {/* Pulsing dot */}
-              <div className="relative shrink-0 flex items-center justify-center w-9 h-9 rounded-xl"
-                style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.18)" }}>
-                <motion.div
-                  className="absolute rounded-full"
-                  animate={{ scale: [1, 1.8, 1], opacity: [0.5, 0, 0.5] }}
-                  transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-                  style={{ width: 10, height: 10, background: "rgba(249,115,22,0.4)" }}
-                />
-                <div className="w-2.5 h-2.5 rounded-full" style={{ background: "#f97316" }} />
-              </div>
-
-              {/* Text */}
-              <div className="flex-1 min-w-0">
-                <p className="text-[13px] font-bold text-white leading-tight">Mining in Progress</p>
-                <p className="text-[11px] mt-0.5" style={{ color: "rgba(249,115,22,0.55)" }}>
-                  Claim unlocks automatically when session ends
-                </p>
-              </div>
-
-              {/* Countdown pill */}
-              <div className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl"
-                style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.12)" }}>
-                <Clock size={10} style={{ color: "rgba(249,115,22,0.6)" }} />
-                <span className="text-[11px] font-bold font-mono tabular-nums" style={{ color: "rgba(249,115,22,0.8)" }}>
-                  {pad(h)}:{pad(m)}:{pad(s)}
-                </span>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* ── Upgrade / Level Card ─────────────────────────────────────────────── */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.13 }}>
-        {isFreeUser ? (
-          <button
-            onClick={() => setLocation("/levels")}
-            className="w-full flex items-center justify-between px-4 py-4 rounded-2xl hover:bg-white/[0.03] transition-colors text-left group"
-            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.15) 0%, rgba(249,115,22,0.05) 100%)", border: "1px solid rgba(249,115,22,0.2)" }}>
-                <TrendingUp size={16} style={{ color: "#f97316" }} />
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-white">Upgrade Mining Power</p>
-                <p className="text-[11px] text-white/30 mt-0.5">Invest USDT to unlock faster gem rates</p>
-              </div>
-            </div>
-            <div className="flex items-center justify-center w-7 h-7 rounded-lg group-hover:translate-x-0.5 transition-transform"
-              style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.15)" }}>
-              <ChevronRight size={14} style={{ color: "rgba(249,115,22,0.6)" }} />
-            </div>
-          </button>
-        ) : (
-          <div className="w-full flex items-center justify-between px-4 py-4 rounded-2xl"
-            style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}>
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-                style={{ background: "linear-gradient(135deg, rgba(249,115,22,0.12) 0%, rgba(249,115,22,0.04) 100%)", border: "1px solid rgba(249,115,22,0.18)" }}>
-                <GemIcon size={18} />
-              </div>
-              <div>
-                <p className="text-[13px] font-bold text-white">{LEVEL_NAMES[currentLevel]}</p>
-                <p className="text-[11px] text-white/30 mt-0.5">
-                  ${(status.totalDepositUsdt ?? 0).toLocaleString()} USDT · Level {currentLevel}
-                </p>
-              </div>
-            </div>
-            <button onClick={() => setLocation("/levels")}
-              className="flex items-center gap-1 text-[12px] font-bold hover:opacity-70 transition-opacity"
-              style={{ color: "#f97316" }}>
-              Boost <ChevronRight size={12} />
-            </button>
-          </div>
-        )}
-      </motion.div>
 
     </div>
   );

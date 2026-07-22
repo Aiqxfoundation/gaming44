@@ -108,7 +108,7 @@ export default function Wallet() {
         <div className="mx-5 h-px bg-white/[0.05]" />
 
         {/* Gems */}
-        <Row onClick={() => navigate("/convert")}>
+        <Row onClick={() => navigate("/wallet/convert")}>
           <div className="w-10 h-10 rounded-full bg-white/[0.06] border border-white/[0.08] flex items-center justify-center shrink-0">
             <GemIcon size={22} />
           </div>
@@ -131,7 +131,7 @@ export default function Wallet() {
         transition={{ delay: 0.1 }}
       >
         <button
-          onClick={() => navigate("/convert")}
+          onClick={() => navigate("/wallet/convert")}
           className="w-full flex items-center justify-between px-5 py-4 rounded-2xl bg-white/[0.04] border border-white/[0.07] hover:bg-white/[0.06] transition-colors"
         >
           <div className="flex items-center gap-3">

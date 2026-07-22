@@ -2,10 +2,11 @@ import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLocation } from "wouter";
 import { notify } from "@/lib/notify";
 import { useGetMyConversions, useCreateConversion, useGetSystemStats, useGetWallet } from "@workspace/api-client-react";
 import { formatGems, cn } from "@/lib/utils";
-import { ArrowDown, History, X, BarChart3, Zap, ArrowRight } from "lucide-react";
+import { ArrowDown, History, X, BarChart3, Zap, ArrowLeft, ArrowRight } from "lucide-react";
 import { GemIcon } from "@/components/GemIcon";
 
 const PTC_LOGO = "/images/etr-logo.png";
@@ -14,6 +15,7 @@ export default function Convert() {
   const [amount, setAmount]           = useState("");
   const [sheet, setSheet]             = useState<"history" | "rate" | null>(null);
   const queryClient                   = useQueryClient();
+  const [, setLocation]               = useLocation();
 
   const { data: conversions, isLoading: isLoadingHistory } = useGetMyConversions();
   const { data: stats }    = useGetSystemStats();
@@ -43,11 +45,19 @@ export default function Convert() {
     <>
       <div className="max-w-sm mx-auto px-4 pt-6 pb-28 flex flex-col gap-4">
 
-        {/* ── Top action pills ─────────────────────────────────────── */}
+        {/* ── Wallet-integrated header ─────────────────────────────────────── */}
         <div className="flex items-center justify-between">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-white/25">Convert Gems</p>
-            <p className="text-[11px] text-white/20 mt-0.5">Exchange gems for PTC tokens</p>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setLocation("/wallet")}
+              className="flex items-center justify-center w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 hover:text-white hover:bg-white/[0.08] transition-all"
+            >
+              <ArrowLeft size={16} />
+            </button>
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.18em] text-white/25">Convert Gems</p>
+              <p className="text-[11px] text-white/20 mt-0.5">Exchange gems for PTC tokens</p>
+            </div>
           </div>
           <div className="flex items-center gap-2">
             <button
