@@ -6,7 +6,7 @@ import { notify } from "@/lib/notify";
 import { useGenerateDepositAddress, useCreateDepositFull } from "@workspace/api-client-react";
 import {
   ArrowLeft, Copy, Check, RefreshCw, AlertCircle, Clock,
-  Upload, X, Hash, Image as ImageIcon, ArrowRight,
+  Upload, X, Hash, Image as ImageIcon, QrCode
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -135,56 +135,51 @@ export default function DepositFlow() {
   const pct = stored ? Math.max(0, (remaining / TTL_MS) * 100) : 0;
 
   return (
-    <div className="max-w-md mx-auto">
-
+    <div className="max-w-md mx-auto pb-24">
       {/* Header */}
-      <div className="sticky top-0 z-10 flex items-center gap-3 px-4 py-3.5 border-b border-white/[0.06]"
-        style={{ background: "hsl(220 14% 6%)" }}>
+      <div className="sticky top-0 z-10 flex items-center gap-3 px-4 py-4 bg-background/80 backdrop-blur-md border-b border-white/[0.04]">
         <button onClick={() => navigate("/wallet/usdt")}
-          className="w-9 h-9 rounded-full bg-white/[0.06] flex items-center justify-center text-white/50 hover:text-white transition-colors">
-          <ArrowLeft size={18} />
+          className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors">
+          <ArrowLeft size={20} />
         </button>
-        <div className="flex items-center gap-2.5">
-          <img src={USDT_LOGO} alt="USDT" className="w-7 h-7 rounded-full" />
+        <div className="flex items-center gap-3">
+          <img src={USDT_LOGO} alt="USDT" className="w-8 h-8 rounded-full" />
           <div>
-            <p className="text-sm font-bold text-white leading-tight">Deposit USDT</p>
-            <p className="text-[10px] text-white/35">Secure USDT Deposit</p>
+            <p className="text-base font-bold text-white leading-tight">Deposit USDT</p>
+            <p className="text-xs text-white/40">Secure Deposit</p>
           </div>
         </div>
       </div>
 
-      <div className="px-4 py-6 space-y-4">
+      <div className="px-4 py-6 space-y-6">
 
         {/* Step 1 — Get Address */}
         {step === "address" && (
-          <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="space-y-4">
-            <div className="rounded-2xl p-6 text-center space-y-4"
-              style={{ background: "#0f1117", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/15 flex items-center justify-center mx-auto">
-                <img src={USDT_LOGO} alt="USDT" className="w-9 h-9 rounded-full" />
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+            <div className="rounded-[32px] p-8 text-center bg-[#0b0c10] border border-white/[0.06]">
+              <div className="w-20 h-20 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-6">
+                <QrCode size={32} className="text-primary" />
               </div>
-              <div>
-                <p className="font-bold text-white">Get Deposit Address</p>
-                <p className="text-sm text-white/45 mt-1 leading-relaxed max-w-64 mx-auto">
-                  Generate a unique deposit address to receive your USDT. Valid for 2 hours.
-                </p>
-              </div>
+              <h2 className="text-xl font-bold text-white mb-2">Get Deposit Address</h2>
+              <p className="text-sm text-white/40 leading-relaxed mb-8 max-w-[240px] mx-auto">
+                Generate a unique BSC deposit address to receive your USDT. Valid for 2 hours.
+              </p>
               <button
                 onClick={handleGenerate}
                 disabled={isGenerating}
-                className="w-full py-3.5 rounded-xl bg-primary text-black font-bold text-sm disabled:opacity-40 hover:brightness-105 transition-all"
+                className="w-full py-4 rounded-2xl bg-primary text-black font-bold text-base disabled:opacity-40 hover:brightness-105 transition-all active:scale-[0.98]"
               >
                 {isGenerating
-                  ? <span className="flex items-center justify-center gap-2"><RefreshCw size={14} className="animate-spin" /> Generating…</span>
+                  ? <span className="flex items-center justify-center gap-2"><RefreshCw size={18} className="animate-spin" /> Generating…</span>
                   : "Generate Address"}
               </button>
             </div>
 
-            <div className="flex items-start gap-3 p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-              <AlertCircle size={14} className="text-white/30 shrink-0 mt-0.5" />
-              <p className="text-xs text-white/40 leading-relaxed">
-                Send <strong className="text-white/60">USDT only</strong> to the provided address.
-                Minimum $10 USDT. Admin reviews within ~2 hours.
+            <div className="flex items-start gap-4 p-5 rounded-[24px] bg-white/[0.02] border border-white/[0.04]">
+              <AlertCircle size={20} className="text-white/40 shrink-0" />
+              <p className="text-sm text-white/50 leading-relaxed">
+                Send <strong className="text-white">USDT only</strong> via BSC network to the provided address.
+                Minimum $10 USDT.
               </p>
             </div>
           </motion.div>
@@ -192,134 +187,123 @@ export default function DepositFlow() {
 
         {/* Address card (always shown if exists) */}
         {stored && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
-            className="rounded-2xl overflow-hidden"
-            style={{ background: "#0f1117", border: "1px solid rgba(255,255,255,0.07)" }}>
-
-            <div className="flex items-center justify-between px-5 pt-4 pb-3 border-b border-white/[0.05]">
-              <p className="text-[10px] text-white/35 uppercase tracking-widest font-semibold">Your Deposit Address</p>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+            className="rounded-[32px] overflow-hidden bg-[#0b0c10] border border-white/[0.06]">
+            <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-white/[0.04]">
+              <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Deposit Address</p>
               <button onClick={handleDismiss}
-                className="w-7 h-7 rounded-full bg-white/[0.06] flex items-center justify-center text-white/40 hover:text-white transition-colors"
+                className="w-8 h-8 rounded-full bg-white/[0.06] flex items-center justify-center text-white/40 hover:text-white hover:bg-white/[0.1] transition-colors"
                 title="Dismiss">
-                <X size={13} />
+                <X size={14} />
               </button>
             </div>
 
-            <div className="px-5 py-4 space-y-3">
-              <code className="text-xs font-mono text-white/80 break-all leading-relaxed block bg-white/[0.04] rounded-xl p-3.5">
+            <div className="px-6 py-6 space-y-6">
+              <code className="text-sm font-mono text-white/90 break-all leading-relaxed block bg-white/[0.04] rounded-2xl p-5 border border-white/[0.06]">
                 {stored.address}
               </code>
               <button onClick={handleCopy}
                 className={cn(
-                  "w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all",
+                  "w-full flex items-center justify-center gap-2 py-4 rounded-2xl text-base font-bold transition-all active:scale-[0.98]",
                   copied
-                    ? "bg-white/[0.08] text-white"
+                    ? "bg-white/[0.1] text-white"
                     : "bg-primary text-black hover:brightness-105"
                 )}>
-                {copied ? <><Check size={14} /> Copied</> : <><Copy size={14} /> Copy Address</>}
+                {copied ? <><Check size={18} /> Copied</> : <><Copy size={18} /> Copy Address</>}
               </button>
 
               {/* Timer */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Clock size={11} className="text-white/30" />
-                  <span className="text-[10px] text-white/30">Expires in</span>
+              <div className="bg-black/30 rounded-2xl p-4 border border-white/[0.04]">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Clock size={14} className="text-white/40" />
+                    <span className="text-xs font-bold text-white/40 uppercase tracking-widest">Expires in</span>
+                  </div>
+                  <span className="text-sm font-bold font-mono text-white">
+                    {String(h).padStart(2, "0")}:{String(m).padStart(2, "0")}:{String(s).padStart(2, "0")}
+                  </span>
                 </div>
-                <span className="text-[11px] font-mono text-white/50">
-                  {String(h).padStart(2, "0")}:{String(m).padStart(2, "0")}:{String(s).padStart(2, "0")}
-                </span>
+                <div className="w-full h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                  <div className="h-full bg-primary/80 rounded-full transition-all duration-1000"
+                    style={{ width: `${pct}%` }} />
+                </div>
               </div>
-              <div className="w-full h-1 bg-white/[0.06] rounded-full overflow-hidden">
-                <div className="h-full bg-primary/60 rounded-full transition-all duration-1000"
-                  style={{ width: `${pct}%` }} />
-              </div>
-              <p className="text-[10px] text-white/20">
-                This address stays active until you manually close it. It does not auto-dismiss.
-              </p>
             </div>
           </motion.div>
         )}
 
         {/* Step 2 — Submit Proof */}
         {stored && (
-          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.06 }}>
-            <div className="rounded-2xl overflow-hidden"
-              style={{ background: "#0f1117", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className="px-5 pt-4 pb-3 border-b border-white/[0.05]">
-                <p className="text-[10px] text-white/35 uppercase tracking-widest font-semibold">Submit Proof of Payment</p>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
+            <div className="rounded-[32px] overflow-hidden bg-[#0b0c10] border border-white/[0.06]">
+              <div className="px-6 pt-6 pb-4 border-b border-white/[0.04]">
+                <p className="text-xs font-bold text-white/40 uppercase tracking-widest">Submit Proof</p>
               </div>
-              <form onSubmit={handleSubmit} className="px-5 py-5 space-y-4">
+              <form onSubmit={handleSubmit} className="px-6 py-6 space-y-6">
                 {/* Amount */}
                 <div>
-                  <label className="text-xs text-white/45 font-medium mb-2 block">Amount Sent (USDT)</label>
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5 block">Amount Sent (USDT)</label>
                   <div className="relative">
                     <input
                       type="number" step="0.01" min="10" value={amount}
                       onChange={e => setAmount(e.target.value)} required placeholder="0.00"
-                      className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3.5 text-white font-mono placeholder:text-white/20 focus:outline-none focus:border-primary/40 transition-colors pr-16"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-2xl px-5 py-4 text-white font-mono placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-colors text-lg pr-20"
                     />
-                    <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-bold text-white/40">USDT</span>
+                    <span className="absolute right-5 top-1/2 -translate-y-1/2 text-sm font-bold text-white/40">USDT</span>
                   </div>
-                  <p className="text-[10px] text-white/30 mt-1">Minimum $10.00</p>
+                  <p className="text-xs text-white/30 mt-2">Minimum $10.00</p>
                 </div>
 
                 {/* TX Hash */}
                 <div>
-                  <label className="text-xs text-white/45 font-medium mb-2 flex items-center gap-1.5 block">
-                    <Hash size={11} /> Transaction Hash
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5 flex items-center gap-2">
+                    <Hash size={14} /> Transaction Hash
                   </label>
                   <input
                     value={txHash} onChange={e => setTxHash(e.target.value)}
                     placeholder="0x..."
-                    className="w-full bg-white/[0.05] border border-white/[0.09] rounded-xl px-4 py-3.5 text-white text-sm font-mono placeholder:text-white/20 focus:outline-none focus:border-primary/40 transition-colors"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-2xl px-5 py-4 text-white text-sm font-mono placeholder:text-white/20 focus:outline-none focus:border-primary/50 transition-colors"
                   />
                 </div>
 
                 {/* OR divider */}
-                <div className="flex items-center gap-3">
+                <div className="flex items-center gap-4">
                   <div className="flex-1 h-px bg-white/[0.06]" />
-                  <span className="text-[10px] text-white/25 font-semibold">OR</span>
+                  <span className="text-xs font-bold text-white/30 uppercase tracking-widest">OR</span>
                   <div className="flex-1 h-px bg-white/[0.06]" />
                 </div>
 
                 {/* Screenshot */}
                 <div>
-                  <label className="text-xs text-white/45 font-medium mb-2 flex items-center gap-1.5 block">
-                    <ImageIcon size={11} /> Payment Screenshot
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-widest mb-2.5 flex items-center gap-2">
+                    <ImageIcon size={14} /> Payment Screenshot
                   </label>
                   {screenshot ? (
-                    <div className="relative rounded-xl overflow-hidden border border-white/[0.09]">
-                      <img src={screenshot.preview} alt="proof" className="w-full h-32 object-cover" />
+                    <div className="relative rounded-2xl overflow-hidden border border-white/[0.08]">
+                      <img src={screenshot.preview} alt="proof" className="w-full h-40 object-cover" />
                       <button type="button"
                         onClick={() => setScreenshot(null)}
-                        className="absolute top-2 right-2 w-7 h-7 bg-black/70 text-white rounded-full flex items-center justify-center hover:bg-black/90 transition-colors">
-                        <X size={12} />
+                        className="absolute top-3 right-3 w-8 h-8 bg-black/80 text-white rounded-full flex items-center justify-center hover:bg-black transition-colors">
+                        <X size={14} />
                       </button>
-                      <div className="absolute bottom-2 left-3 flex items-center gap-1.5">
-                        <Check size={11} className="text-primary" />
-                        <span className="text-[10px] text-white/70 font-semibold">Screenshot attached</span>
+                      <div className="absolute bottom-3 left-3 flex items-center gap-2 bg-black/80 px-3 py-1.5 rounded-lg">
+                        <Check size={14} className="text-emerald-400" />
+                        <span className="text-xs text-white font-bold">Attached</span>
                       </div>
                     </div>
                   ) : (
                     <button type="button" onClick={() => fileRef.current?.click()}
-                      className="w-full h-20 border border-dashed border-white/[0.12] rounded-xl flex flex-col items-center justify-center gap-1.5 text-white/30 hover:border-primary/30 hover:text-primary/60 transition-all">
-                      <Upload size={18} />
-                      <span className="text-xs">Upload screenshot (max 5 MB)</span>
+                      className="w-full h-28 border-2 border-dashed border-white/[0.1] rounded-2xl flex flex-col items-center justify-center gap-2 text-white/40 hover:border-primary/50 hover:text-primary transition-all bg-white/[0.01] hover:bg-primary/5">
+                      <Upload size={24} />
+                      <span className="text-sm font-semibold">Upload screenshot</span>
+                      <span className="text-xs opacity-60">Max 5 MB</span>
                     </button>
                   )}
                   <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
                 </div>
 
-                <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                  <AlertCircle size={13} className="text-white/30 shrink-0 mt-0.5" />
-                  <p className="text-xs text-white/40 leading-relaxed">
-                    Send <strong className="text-white/60">USDT only</strong> to the provided address.
-                    Admin approves within ~2 hours.
-                  </p>
-                </div>
-
                 <button type="submit" disabled={isSubmitting}
-                  className="w-full py-3.5 rounded-xl bg-primary text-black font-bold text-sm disabled:opacity-40 hover:brightness-105 transition-all">
+                  className="w-full py-4 rounded-2xl bg-primary text-black font-bold text-base disabled:opacity-40 hover:brightness-105 transition-all active:scale-[0.98]">
                   {isSubmitting ? "Submitting…" : "Submit Deposit Request"}
                 </button>
               </form>

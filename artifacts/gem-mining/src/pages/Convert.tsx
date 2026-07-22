@@ -42,272 +42,205 @@ export default function Convert() {
   };
 
   return (
-    <>
-      <div className="max-w-sm mx-auto px-4 pt-6 pb-28 flex flex-col gap-4">
-
-        {/* ── Wallet-integrated header ─────────────────────────────────────── */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => setLocation("/wallet")}
-              className="flex items-center justify-center w-8 h-8 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 hover:text-white hover:bg-white/[0.08] transition-all"
-            >
-              <ArrowLeft size={16} />
-            </button>
-            <div>
-              <p className="text-xs font-black uppercase tracking-[0.18em] text-white/25">Convert Gems</p>
-              <p className="text-[11px] text-white/20 mt-0.5">Exchange gems for PTC tokens</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
-            <button
-              onClick={() => setSheet(sheet === "rate" ? null : "rate")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
-                sheet === "rate"
-                  ? "text-orange-400"
-                  : "text-white/40 hover:text-white/70",
-              )}
-              style={{
-                background: sheet === "rate" ? "rgba(249,115,22,0.12)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${sheet === "rate" ? "rgba(249,115,22,0.25)" : "rgba(255,255,255,0.08)"}`,
-              }}
-            >
-              <BarChart3 size={12} /> Rate
-            </button>
-            <button
-              onClick={() => setSheet(sheet === "history" ? null : "history")}
-              className={cn(
-                "flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all",
-                sheet === "history"
-                  ? "text-orange-400"
-                  : "text-white/40 hover:text-white/70",
-              )}
-              style={{
-                background: sheet === "history" ? "rgba(249,115,22,0.12)" : "rgba(255,255,255,0.04)",
-                border: `1px solid ${sheet === "history" ? "rgba(249,115,22,0.25)" : "rgba(255,255,255,0.08)"}`,
-              }}
-            >
-              <History size={12} />
-              History
-              {conversions?.length ? (
-                <span className="ml-0.5 text-[9px] font-black px-1.5 py-0.5 rounded-full"
-                  style={{ background: "rgba(249,115,22,0.2)", color: "#f97316" }}>
-                  {conversions.length}
-                </span>
-              ) : null}
-            </button>
+    <div className="max-w-md mx-auto pb-24">
+      {/* Header */}
+      <div className="sticky top-0 z-10 flex items-center justify-between px-4 py-4 bg-background/80 backdrop-blur-md border-b border-white/[0.04]">
+        <div className="flex items-center gap-3">
+          <button onClick={() => setLocation("/wallet")}
+            className="w-10 h-10 rounded-full bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-white/60 hover:text-white hover:bg-white/[0.08] transition-colors">
+            <ArrowLeft size={20} />
+          </button>
+          <div>
+            <p className="text-base font-bold text-white leading-tight">Convert Gems</p>
+            <p className="text-xs text-white/40">Gems to PTC</p>
           </div>
         </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSheet(sheet === "rate" ? null : "rate")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all",
+              sheet === "rate" ? "bg-primary/20 text-primary border border-primary/30" : "bg-white/[0.04] text-white/50 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white"
+            )}
+          >
+            <BarChart3 size={14} /> Rate
+          </button>
+          <button
+            onClick={() => setSheet(sheet === "history" ? null : "history")}
+            className={cn(
+              "flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all",
+              sheet === "history" ? "bg-primary/20 text-primary border border-primary/30" : "bg-white/[0.04] text-white/50 border border-white/[0.08] hover:bg-white/[0.08] hover:text-white"
+            )}
+          >
+            <History size={14} /> History
+          </button>
+        </div>
+      </div>
 
-        {/* ── Expandable panels ──────────────────────────────────────── */}
-        <AnimatePresence>
+      <div className="px-4 py-6 space-y-6">
+        
+        {/* Panels */}
+        <AnimatePresence mode="sync">
           {sheet === "rate" && (
             <motion.div
               key="rate-panel"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="rounded-[24px] p-5 bg-primary/10 border border-primary/20"
             >
-              <div className="rounded-2xl p-4 space-y-2"
-                style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }}>
-                <div className="flex items-center justify-between mb-2">
-                  <p className="text-[10px] font-bold uppercase tracking-widest text-white/40">Conversion Rate</p>
-                  <button onClick={() => setSheet(null)} className="text-white/25 hover:text-white/60 transition-colors">
-                    <X size={13} />
-                  </button>
-                </div>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-black font-mono" style={{ color: "#f97316" }}>
-                    {formatGems(currentRate)}
-                  </span>
-                  <span className="text-sm text-white/40">gems = 1 PTC</span>
-                </div>
-                {stats?.isDynamicRateActive && (
-                  <div className="flex items-center gap-1.5 mt-2 pt-2" style={{ borderTop: "1px solid rgba(249,115,22,0.15)" }}>
-                    <Zap size={10} style={{ color: "#f97316" }} />
-                    <p className="text-[10px]" style={{ color: "rgba(249,115,22,0.7)" }}>
-                      Dynamic Halving active — rate increases with volume
-                    </p>
-                  </div>
-                )}
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-bold uppercase tracking-widest text-primary/70">Conversion Rate</p>
+                <button onClick={() => setSheet(null)} className="text-primary/50 hover:text-primary transition-colors">
+                  <X size={16} />
+                </button>
               </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-3xl font-black font-mono text-primary tabular-nums">
+                  {formatGems(currentRate)}
+                </span>
+                <span className="text-sm font-bold text-primary/60">gems = 1 PTC</span>
+              </div>
+              {stats?.isDynamicRateActive && (
+                <div className="flex items-center gap-2 mt-4 pt-4 border-t border-primary/20">
+                  <Zap size={14} className="text-primary" />
+                  <p className="text-xs font-bold text-primary/80">
+                    Dynamic Halving active
+                  </p>
+                </div>
+              )}
             </motion.div>
           )}
 
           {sheet === "history" && (
             <motion.div
               key="history-panel"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              className="rounded-[24px] overflow-hidden bg-[#0b0c10] border border-white/[0.06]"
             >
-              <div className="rounded-2xl overflow-hidden"
-                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
-                <div className="flex items-center justify-between px-4 py-3"
-                  style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                  <p className="text-xs font-bold text-white/60">Conversion History</p>
-                  <button onClick={() => setSheet(null)} className="text-white/25 hover:text-white/60 transition-colors">
-                    <X size={13} />
-                  </button>
-                </div>
-                {isLoadingHistory ? (
-                  <div className="py-6 flex justify-center">
-                    <div className="w-5 h-5 rounded-full animate-spin"
-                      style={{ border: "2px solid rgba(249,115,22,0.2)", borderTopColor: "#f97316" }} />
-                  </div>
-                ) : !conversions?.length ? (
-                  <div className="py-8 text-center">
-                    <p className="text-sm text-white/25">No conversions yet</p>
-                  </div>
-                ) : (
-                  <div className="divide-y max-h-56 overflow-y-auto custom-scrollbar"
-                    style={{ divideColor: "rgba(255,255,255,0.04)" }}>
-                    {conversions.map((c) => (
-                      <div key={c.id} className="flex items-center gap-3 px-4 py-3"
-                        style={{ borderColor: "rgba(255,255,255,0.04)" }}>
-                        <div>
-                          <div className="flex items-center gap-1.5">
-                            <span className="text-xs font-bold text-red-400/80 font-mono">−{formatGems(c.gemsSpent)}</span>
-                            <ArrowRight size={9} className="text-white/20" />
-                            <span className="text-xs font-bold text-orange-400 font-mono">+{c.outputAmount.toFixed(4)} PTC</span>
-                          </div>
-                          <p className="text-[10px] text-white/25 mt-0.5 font-mono">
-                            {format(new Date(c.createdAt), "MMM d · HH:mm")}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.04]">
+                <p className="text-xs font-bold uppercase tracking-widest text-white/40">Conversion History</p>
+                <button onClick={() => setSheet(null)} className="text-white/40 hover:text-white transition-colors">
+                  <X size={16} />
+                </button>
               </div>
+              {isLoadingHistory ? (
+                <div className="py-8 flex justify-center">
+                  <div className="w-6 h-6 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+                </div>
+              ) : !conversions?.length ? (
+                <div className="py-8 text-center text-sm text-white/40 font-bold">
+                  No conversions yet
+                </div>
+              ) : (
+                <div className="divide-y divide-white/[0.04] max-h-64 overflow-y-auto custom-scrollbar">
+                  {conversions.map((c) => (
+                    <div key={c.id} className="flex items-center justify-between px-5 py-4">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-bold text-white/60 font-mono">−{formatGems(c.gemsSpent)}</span>
+                          <ArrowRight size={12} className="text-white/30" />
+                          <span className="text-sm font-bold text-primary font-mono">+{c.outputAmount.toFixed(4)} PTC</span>
+                        </div>
+                        <p className="text-xs text-white/30 mt-1 font-mono">
+                          {format(new Date(c.createdAt), "MMM d, HH:mm")}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* ── Balance pill ────────────────────────────────────────────── */}
-        <div className="flex items-center justify-between px-4 py-3 rounded-2xl"
-          style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }}>
-          <div className="flex items-center gap-2">
-            <GemIcon size={14} />
-            <span className="text-xs text-white/50">Available</span>
+        {/* Balance */}
+        <div className="flex items-center justify-between px-5 py-4 rounded-[24px] bg-[#0b0c10] border border-white/[0.06]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+               <GemIcon size={20} className="text-primary" />
+            </div>
+            <span className="text-sm font-bold text-white/50">Available Balance</span>
           </div>
-          <span className="font-mono text-sm font-black" style={{ color: "#f97316" }}>
-            {formatGems(gemBalance)} gems
+          <span className="text-xl font-black font-mono text-white tabular-nums">
+            {formatGems(gemBalance)}
           </span>
         </div>
 
-        {/* ── Converter card ──────────────────────────────────────────── */}
+        {/* Converter */}
         <motion.div
-          initial={{ opacity: 0, y: 12 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-3xl overflow-hidden"
-          style={{
-            background: "linear-gradient(160deg, #0d0e15 0%, #111320 100%)",
-            border: "1px solid rgba(255,255,255,0.07)",
-          }}
+          className="rounded-[32px] overflow-hidden bg-[#0b0c10] border border-white/[0.06]"
         >
-          <form onSubmit={handleSubmit} className="p-5 space-y-4">
+          <form onSubmit={handleSubmit} className="p-6 space-y-6">
 
             {/* Gem input */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-[10px] uppercase tracking-[0.15em] text-white/30 font-semibold">
-                  Gems
-                </label>
-                <button type="button"
-                  onClick={() => setAmount(String(Math.floor(gemBalance)))}
-                  className="text-[11px] font-bold hover:opacity-70 transition-opacity"
-                  style={{ color: "#f97316" }}>
-                  Max
+              <div className="flex items-center justify-between mb-3">
+                <label className="text-xs font-bold uppercase tracking-widest text-white/40">Gems</label>
+                <button type="button" onClick={() => setAmount(String(Math.floor(gemBalance)))}
+                  className="text-xs font-bold text-primary hover:underline">
+                  MAX
                 </button>
               </div>
               <div className="relative">
                 <input
                   type="number" min="1" step="1" value={amount}
-                  onChange={e => setAmount(e.target.value)} required
-                  placeholder="0"
-                  className="w-full rounded-2xl px-4 py-4 text-white text-3xl font-black font-mono placeholder:text-white/10 focus:outline-none pr-16"
-                  style={{
-                    background: "rgba(255,255,255,0.04)",
-                    border: `1px solid ${numAmount > 0 && numAmount <= gemBalance ? "rgba(249,115,22,0.25)" : numAmount > gemBalance ? "rgba(248,113,113,0.3)" : "rgba(255,255,255,0.07)"}`,
-                  }}
+                  onChange={e => setAmount(e.target.value)} required placeholder="0"
+                  className={cn(
+                    "w-full rounded-2xl px-5 py-5 text-white text-3xl font-black font-mono placeholder:text-white/10 focus:outline-none transition-colors pr-16",
+                    numAmount > 0 && numAmount <= gemBalance ? "bg-primary/10 border border-primary/30" : numAmount > gemBalance ? "bg-red-500/10 border border-red-500/30" : "bg-white/[0.04] border border-white/[0.08] focus:border-primary/50"
+                  )}
                 />
-                <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                  <GemIcon size={18} />
+                <div className="absolute right-5 top-1/2 -translate-y-1/2 text-primary/50">
+                  <GemIcon size={24} />
                 </div>
               </div>
               {numAmount > gemBalance && numAmount > 0 && (
-                <p className="text-[11px] text-red-400/80 mt-1.5 px-1">Exceeds your balance</p>
+                <p className="text-xs font-bold text-red-400 mt-2 px-1">Exceeds your balance</p>
               )}
             </div>
 
-            {/* Arrow */}
-            <div className="flex justify-center">
-              <div className="w-10 h-10 rounded-full flex items-center justify-center"
-                style={{ background: "rgba(249,115,22,0.08)", border: "1px solid rgba(249,115,22,0.15)" }}>
-                <ArrowDown size={14} style={{ color: "#f97316" }} />
+            <div className="flex justify-center -my-2 relative z-10">
+              <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center border border-white/[0.06]">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ArrowDown size={20} className="text-primary" />
+                </div>
               </div>
             </div>
 
             {/* PTC output */}
-            <div className="rounded-2xl p-4"
-              style={{
-                background: numAmount > 0 && numAmount <= gemBalance
-                  ? "rgba(249,115,22,0.07)"
-                  : "rgba(255,255,255,0.025)",
-                border: `1px solid ${numAmount > 0 && numAmount <= gemBalance ? "rgba(249,115,22,0.2)" : "rgba(255,255,255,0.06)"}`,
-              }}>
-              <p className="text-[10px] uppercase tracking-widest text-white/25 font-semibold mb-2">You Receive</p>
-              <div className="flex items-center gap-3">
-                <img src={PTC_LOGO} alt="PTC" className="w-9 h-9 rounded-full shrink-0" />
-                <span className="text-2xl font-black font-mono tabular-nums" style={{ color: numAmount > 0 && numAmount <= gemBalance ? "#f97316" : "rgba(255,255,255,0.2)" }}>
-                  {numAmount > 0 && numAmount <= gemBalance
-                    ? `${expectedPtc.toFixed(4)} PTC`
-                    : "— PTC"}
+            <div className={cn(
+              "rounded-2xl p-5 transition-colors",
+              numAmount > 0 && numAmount <= gemBalance ? "bg-primary/10 border border-primary/20" : "bg-white/[0.02] border border-white/[0.04]"
+            )}>
+              <p className="text-xs font-bold uppercase tracking-widest text-white/30 mb-3">You Receive</p>
+              <div className="flex items-center gap-4">
+                <img src={PTC_LOGO} alt="PTC" className="w-10 h-10 rounded-full shrink-0" />
+                <span className={cn(
+                  "text-3xl font-black font-mono tabular-nums",
+                  numAmount > 0 && numAmount <= gemBalance ? "text-primary" : "text-white/20"
+                )}>
+                  {numAmount > 0 && numAmount <= gemBalance ? `${expectedPtc.toFixed(4)} PTC` : "— PTC"}
                 </span>
               </div>
             </div>
 
-            {/* Submit */}
-            <motion.button
+            <button
               type="submit"
               disabled={isPending || numAmount <= 0 || numAmount > gemBalance}
-              whileTap={{ scale: 0.98 }}
-              className="w-full relative py-4 rounded-2xl font-bold text-[15px] text-white overflow-hidden transition-all disabled:opacity-30 disabled:cursor-not-allowed"
-              style={{
-                background: numAmount > 0 && numAmount <= gemBalance
-                  ? "linear-gradient(135deg, #ea6c10 0%, #f97316 100%)"
-                  : "rgba(255,255,255,0.04)",
-                border: numAmount > 0 && numAmount <= gemBalance ? "none" : "1px solid rgba(255,255,255,0.07)",
-                boxShadow: numAmount > 0 && numAmount <= gemBalance ? "0 6px 24px rgba(249,115,22,0.35)" : "none",
-              }}
+              className="w-full py-5 rounded-2xl font-bold text-base transition-all disabled:opacity-40 disabled:cursor-not-allowed bg-primary text-black hover:brightness-105 active:scale-[0.98]"
             >
-              {numAmount > 0 && numAmount <= gemBalance && !isPending && (
-                <motion.div className="absolute inset-0 pointer-events-none"
-                  animate={{ x: ["-100%", "200%"] }}
-                  transition={{ repeat: Infinity, duration: 2.5, ease: "easeInOut", repeatDelay: 2 }}
-                  style={{ background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)", width: "50%" }}
-                />
-              )}
-              {isPending ? "Converting…"
-                : numAmount > 0 && numAmount <= gemBalance
-                  ? `Convert → ${expectedPtc.toFixed(4)} PTC`
-                  : "Enter Amount"}
-            </motion.button>
-
-            <p className="text-center text-[10px] text-white/20">
-              {formatGems(currentRate)} gems = 1 PTC
-              {stats?.isDynamicRateActive && " · Halving active"}
-            </p>
+              {isPending ? "Converting…" : numAmount > 0 && numAmount <= gemBalance ? `Convert to PTC` : "Enter Amount"}
+            </button>
+            
           </form>
         </motion.div>
 
       </div>
-    </>
+    </div>
   );
 }
