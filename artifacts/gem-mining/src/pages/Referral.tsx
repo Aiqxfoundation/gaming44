@@ -6,7 +6,7 @@ import type { ReferralUser } from "@workspace/api-client-react";
 import { formatGems } from "@/lib/utils";
 import {
   Users, Copy, Share2, Lock, Unlock, CheckCircle2,
-  XCircle, ChevronDown, Gem, Shield, TrendingUp, Network,
+  XCircle, ChevronDown, Shield, TrendingUp, Network,
   AlertTriangle, Sparkles
 } from "lucide-react";
 import { format } from "date-fns";
@@ -137,7 +137,7 @@ function LevelSection({ level, users, label, commissionRate }: {
         {level === 1 ? <Users size={16} className="text-white/25" /> : <Network size={16} className="text-white/25" />}
       </div>
       <p className="text-sm font-semibold text-white/30">{label}</p>
-      <p className="text-xs text-white/20 mt-1">No referrals yet · Share your link to grow your network</p>
+      <p className="text-xs text-white/20 mt-1">No team members yet · Share your link to grow your network</p>
     </div>
   );
 
@@ -228,7 +228,7 @@ export default function Referral() {
           <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
             className="w-10 h-10 rounded-full"
             style={{ border: "2px solid rgba(249,115,22,0.15)", borderTopColor: "#f97316" }} />
-          <p className="text-[11px] uppercase tracking-widest text-white/20 font-semibold">Loading Network…</p>
+          <p className="text-[11px] uppercase tracking-widest text-white/20 font-semibold">Loading Team…</p>
         </div>
       </div>
     );
@@ -268,8 +268,8 @@ export default function Referral() {
               <Share2 size={18} style={{ color: "#f97316" }} />
             </div>
             <div>
-              <p className="text-[9px] uppercase tracking-[0.2em] text-white/25 font-semibold">Referral Network</p>
-              <p className="text-base font-black text-white">Peridot Commission Tree</p>
+              <p className="text-[9px] uppercase tracking-[0.2em] text-white/25 font-semibold">Team Network</p>
+              <p className="text-base font-black text-white">My Team</p>
             </div>
             {uplineVerified && (
               <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
@@ -282,8 +282,8 @@ export default function Referral() {
 
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-2.5 mb-5">
-            <StatCard label="Direct Refs" value={refData.level1.length} sub="Level 1 · 15% USDT" icon={<Users size={16} />} accent="orange" />
-            <StatCard label="Network Refs" value={refData.level2.length} sub="Level 2 · 5% USDT" icon={<Network size={16} />} accent="blue" />
+            <StatCard label="Direct" value={refData.level1.length} sub="Level 1 · 15% USDT" icon={<Users size={16} />} accent="orange" />
+            <StatCard label="Network" value={refData.level2.length} sub="Level 2 · 5% USDT" icon={<Network size={16} />} accent="blue" />
             <StatCard
               label="Claimable Gems"
               value={formatGems(refData.totalClaimableGems)}
@@ -328,7 +328,7 @@ export default function Referral() {
                   Claiming…
                 </>
               ) : (
-                <><Sparkles size={16} /> Claim {formatGems(refData.totalClaimableGems)} Referral Gems</>
+                <><Sparkles size={16} /> Claim {formatGems(refData.totalClaimableGems)} Team Gems</>
               )}
             </motion.button>
           ) : !uplineVerified ? (
@@ -338,7 +338,7 @@ export default function Referral() {
               <div>
                 <p className="text-sm font-bold text-white">Verify Your Account First</p>
                 <p className="text-xs text-white/40 mt-1 leading-relaxed">
-                  You must mint your KYC Verification Badge (20 PTC) to claim referral gems and receive USDT commissions. Your referees' gem rewards are held safely until you verify.
+                  You must mint your KYC Verification Badge (20 PTC) to claim team gems and receive USDT commissions. Your team members' gem rewards are held safely until you verify.
                 </p>
               </div>
             </div>
@@ -347,9 +347,9 @@ export default function Referral() {
               style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.15)" }}>
               <Lock size={15} style={{ color: "rgba(249,115,22,0.8)", flexShrink: 0, marginTop: 1 }} />
               <div>
-                <p className="text-sm font-bold text-white">Gems Locked — Waiting on Referees</p>
+                <p className="text-sm font-bold text-white">Gems Locked — Waiting on Team Members</p>
                 <p className="text-xs text-white/40 mt-1 leading-relaxed">
-                  You are verified! Locked gems are held until each referee also completes KYC verification. Encourage your referrals to mint their verification badge.
+                  You are verified! Locked gems are held until each team member also completes KYC verification. Encourage your team to mint their verification badge.
                 </p>
               </div>
             </div>
@@ -358,18 +358,18 @@ export default function Referral() {
               style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
               <TrendingUp size={15} className="text-white/30 shrink-0 mt-0.5" />
               <p className="text-xs text-white/40 leading-relaxed">
-                Share your referral link below. When your referrals mine and claim gems, your commission accumulates here. Both parties must be KYC verified to unlock gem rewards.
+                Share your team link below. When your team members mine and claim gems, your commission accumulates here. Both parties must be KYC verified to unlock gem rewards.
               </p>
             </div>
           )}
         </div>
       </motion.div>
 
-      {/* ── Referral Link ──────────────────────────────────────────────────── */}
+      {/* ── Team Link ──────────────────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
         className="rounded-3xl p-5"
         style={{ background: "linear-gradient(160deg, #0d0e15 0%, #111320 100%)", border: "1px solid rgba(255,255,255,0.07)" }}>
-        <p className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-semibold mb-3">Your Referral Link</p>
+        <p className="text-[10px] uppercase tracking-[0.15em] text-white/25 font-semibold mb-3">Your Team Link</p>
 
         {/* Code badge */}
         <div className="flex items-center gap-2 mb-3">
@@ -403,8 +403,8 @@ export default function Referral() {
         {/* Commission info */}
         <div className="grid grid-cols-2 gap-2 mt-4">
           {[
-            { label: "Level 1 USDT", value: "15%", desc: "Direct referral deposits" },
-            { label: "Level 2 USDT", value: "5%", desc: "Network referral deposits" },
+            { label: "Level 1 USDT", value: "15%", desc: "Direct team deposits" },
+            { label: "Level 2 USDT", value: "5%", desc: "Network team deposits" },
           ].map((item, i) => (
             <div key={i} className="px-3 py-2.5 rounded-xl text-center"
               style={{ background: "rgba(249,115,22,0.06)", border: "1px solid rgba(249,115,22,0.12)" }}>
@@ -426,21 +426,21 @@ export default function Referral() {
             {
               icon: <Unlock size={14} style={{ color: "#4ade80" }} />,
               title: "USDT Commission (Instant)",
-              desc: "When your referral deposits USDT, you receive 15% directly — only if you are KYC verified. If not, commission bubbles up to the next verified upline.",
+              desc: "When your team member deposits USDT, you receive 15% directly — only if you are KYC verified. If not, commission bubbles up to the next verified upline.",
               color: "rgba(74,222,128,0.12)",
               border: "rgba(74,222,128,0.18)",
             },
             {
               icon: <GemIcon size={14} />,
               title: "Gem Rewards (KYC-Gated)",
-              desc: "You earn 10% of your referral's mined gems each session. These are locked until BOTH you and your referral have completed KYC verification.",
+              desc: "You earn 10% of your team member's mined gems each session. These are locked until BOTH you and your team member have completed KYC verification.",
               color: "rgba(249,115,22,0.08)",
               border: "rgba(249,115,22,0.15)",
             },
             {
               icon: <Lock size={14} style={{ color: "rgba(248,113,113,0.7)" }} />,
-              title: "Unverified Referral",
-              desc: "If your referral is not KYC verified, their gem rewards accumulate locked in your account. Once they verify, gems unlock and become claimable.",
+              title: "Unverified Team Member",
+              desc: "If your team member is not KYC verified, their gem rewards accumulate locked in your account. Once they verify, gems unlock and become claimable.",
               color: "rgba(248,113,113,0.06)",
               border: "rgba(248,113,113,0.12)",
             },
@@ -457,22 +457,22 @@ export default function Referral() {
         </div>
       </motion.div>
 
-      {/* ── Level 1 Network ───────────────────────────────────────────────── */}
+      {/* ── Level 1 Team ───────────────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <LevelSection
           level={1}
           users={refData.level1}
-          label="Direct Referrals (L1)"
+          label="Direct Team (L1)"
           commissionRate="15%"
         />
       </motion.div>
 
-      {/* ── Level 2 Network ───────────────────────────────────────────────── */}
+      {/* ── Level 2 Team ───────────────────────────────────────────────── */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.12 }}>
         <LevelSection
           level={2}
           users={refData.level2}
-          label="Network Referrals (L2)"
+          label="Network Team (L2)"
           commissionRate="5%"
         />
       </motion.div>
