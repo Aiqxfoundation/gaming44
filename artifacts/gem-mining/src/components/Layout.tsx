@@ -44,10 +44,10 @@ export function Layout({ children, user }: { children: React.ReactNode; user: Us
         <div className="flex items-center gap-2.5">
           <img
             src={`${import.meta.env.BASE_URL}images/logo-icon.png`}
-            alt="Peridot"
+            alt="EthicX"
             className="w-7 h-7 object-contain"
           />
-          <span className="font-bold text-foreground text-sm tracking-tight">Peridot Mining</span>
+          <span className="font-bold text-foreground text-sm tracking-tight">EthicX Mining</span>
         </div>
 
         <div className="flex items-center gap-2.5">

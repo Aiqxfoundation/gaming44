@@ -6,9 +6,10 @@ import {
 } from "@workspace/api-client-react";
 import { formatCurrency, formatGems, cn } from "@/lib/utils";
 import {
-  ChevronRight, ShieldCheck, ArrowRightLeft, ArrowDownLeft, ArrowUpRight, Send, Lock, History, Coins
+  ChevronRight, ShieldCheck, ArrowRightLeft, ArrowDownLeft, ArrowUpRight, Send, Lock, History
 } from "lucide-react";
 import { GemIcon } from "@/components/GemIcon";
+import { EixLogo } from "@/components/EixLogo";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 import { format } from "date-fns";
 
@@ -171,7 +172,7 @@ export default function Wallet() {
 
           <button onClick={() => navigate("/eix")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
             <div className="w-10 h-10 rounded-full bg-orange-500/15 flex items-center justify-center shrink-0">
-              <Coins size={20} className="text-orange-400" />
+              <EixLogo size={24} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-base font-bold text-white">EthicX</p>

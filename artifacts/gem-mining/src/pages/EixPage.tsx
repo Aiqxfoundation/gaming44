@@ -13,9 +13,10 @@ import {
   useClaimEixReferral,
 } from "@workspace/api-client-react";
 import {
-  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, Coins, ChevronRight,
+  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, ChevronRight,
 } from "lucide-react";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
+import { EixLogo } from "@/components/EixLogo";
 
 const CURRENCIES = [
   { code: "usdt", label: "USDT", network: "BEP-20" },
@@ -114,7 +115,7 @@ export default function EixPage() {
           onClick={() => setShowBuy((s) => !s)}
           className="mt-4 w-full h-11 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm flex items-center justify-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-all"
         >
-          <Coins size={16} /> Buy EIX
+          <EixLogo size={16} /> Buy EIX
         </button>
       </motion.div>
 
