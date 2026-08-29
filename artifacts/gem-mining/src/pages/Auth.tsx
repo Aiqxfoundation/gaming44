@@ -69,7 +69,7 @@ export default function Auth({ mode: initialMode }: { mode: 'login' | 'signup' |
       {/* Background Watermark */}
       <div className="absolute inset-0 z-0 flex items-center justify-center pointer-events-none">
         <img 
-          src={`${import.meta.env.BASE_URL}images/logo-icon.png`} 
+          src={`${import.meta.env.BASE_URL}images/eix-logo.png`} 
           alt="" 
           className="w-[600px] h-[600px] object-contain opacity-[0.03] rotate-12" 
         />
@@ -78,11 +78,11 @@ export default function Auth({ mode: initialMode }: { mode: 'login' | 'signup' |
       <Card className="w-full max-w-md p-8 z-10 border-border shadow-xl relative">
         <div className="flex flex-col items-center mb-8">
           <div className="flex items-center gap-3 mb-2">
-            <img src={`${import.meta.env.BASE_URL}images/logo-icon.png`} alt="Logo" className="w-10 h-10 object-contain" />
+            <img src={`${import.meta.env.BASE_URL}images/eix-logo.png`} alt="EthicX" className="w-10 h-10 object-contain" />
             <h1 className="text-xl font-bold text-foreground">EthicX Mining</h1>
           </div>
           <p className="text-muted-foreground text-sm">
-            {mode === 'login' ? 'Login to your Peridot Mining account' : mode === 'signup' ? 'Create an account to start mining Peridot Gems' : 'Reset your lost password'}
+            {mode === 'login' ? 'Login to your EthicX Mining account' : mode === 'signup' ? 'Create an account to start mining with EthicX' : 'Reset your lost password'}
           </p>
         </div>
 

@@ -43,7 +43,7 @@ export function Layout({ children, user }: { children: React.ReactNode; user: Us
         style={{ background: "rgba(10,11,17,0.95)", backdropFilter: "blur(12px)" }}>
         <div className="flex items-center gap-2.5">
           <img
-            src={`${import.meta.env.BASE_URL}images/logo-icon.png`}
+            src={`${import.meta.env.BASE_URL}images/eix-logo.png`}
             alt="EthicX"
             className="w-7 h-7 object-contain"
           />
