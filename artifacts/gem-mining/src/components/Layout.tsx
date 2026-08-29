@@ -8,6 +8,7 @@ import { cn, formatGems } from "@/lib/utils";
 import { useGetWallet, useLogout } from "@workspace/api-client-react";
 import type { UserProfile } from "@workspace/api-client-react";
 import { GemIcon } from "./GemIcon";
+import { useEixBalanceSync } from "@/hooks/useEixBalanceSync";
 
 const BOTTOM_TABS = [
   { href: "/mining",   label: "Mine",    icon: Pickaxe },
@@ -22,6 +23,9 @@ export function Layout({ children, user }: { children: React.ReactNode; user: Us
   const { data: wallet } = useGetWallet();
   const { mutate: logout } = useLogout();
   const [, setLocation] = useLocation();
+
+  // Keep the EIX balance live across the app while deposits are pending.
+  useEixBalanceSync();
 
   const handleLogout = () => {
     logout(undefined, {

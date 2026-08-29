@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
+import { useLocation } from "wouter";
 import { notify } from "@/lib/notify";
 import { cn, formatGems } from "@/lib/utils";
 import {
@@ -12,8 +13,9 @@ import {
   useClaimEixReferral,
 } from "@workspace/api-client-react";
 import {
-  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, Coins,
+  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, Coins, ChevronRight,
 } from "lucide-react";
+import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 
 const CURRENCIES = [
   { code: "usdt", label: "USDT", network: "BEP-20" },
@@ -146,7 +148,10 @@ export default function EixPage() {
           onSubmit={handleSubmit}
           className="rounded-2xl bg-card border border-border p-4 space-y-4"
         >
-          <h3 className="text-sm font-bold text-white">Buy EIX with Crypto</h3>
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-bold text-white">Buy EIX with Crypto</h3>
+            <ConnectWalletButton compact />
+          </div>
           <div className="grid grid-cols-4 gap-2">
             {CURRENCIES.map((c) => (
               <button

@@ -1,14 +1,15 @@
 import React, { useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
-import { 
-  useGetWallet, useGetDepositsFull, useGetMyWithdrawals, useGetMyConversions 
+import {
+  useGetWallet, useGetDepositsFull, useGetMyWithdrawals, useGetMyConversions, useGetEixWallet
 } from "@workspace/api-client-react";
 import { formatCurrency, formatGems, cn } from "@/lib/utils";
-import { 
-  ChevronRight, ShieldCheck, ArrowRightLeft, ArrowDownLeft, ArrowUpRight, Send, Lock, History 
+import {
+  ChevronRight, ShieldCheck, ArrowRightLeft, ArrowDownLeft, ArrowUpRight, Send, Lock, History, Coins
 } from "lucide-react";
 import { GemIcon } from "@/components/GemIcon";
+import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 import { format } from "date-fns";
 
 const PTC_LOGO  = "/images/etr-logo.png";
@@ -90,6 +91,11 @@ export default function Wallet() {
 
   return (
     <div className="max-w-md mx-auto px-4 py-6 space-y-8 pb-24">
+      {/* Web3 wallet connection */}
+      <div className="flex justify-end pt-2">
+        <ConnectWalletButton />
+      </div>
+
       {/* Total Balance */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-2">
         <p className="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">Total Balance</p>

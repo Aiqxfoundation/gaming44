@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import { useGetMe } from "@workspace/api-client-react";
 
 import { Layout } from "@/components/Layout";
+import { Web3WalletProvider } from "@/lib/web3Wallet";
 import Auth from "@/pages/Auth";
 import Mining from "@/pages/Mining";
 import Levels from "@/pages/Levels";
@@ -145,17 +146,19 @@ function Router() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-        <Router />
-      </WouterRouter>
-      <Toaster
-        position="top-center"
-        gap={10}
-        toastOptions={{
-          unstyled: true,
-          style: { padding: 0, margin: 0, background: "transparent", border: "none", boxShadow: "none" },
-        }}
-      />
+      <Web3WalletProvider>
+        <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+          <Router />
+        </WouterRouter>
+        <Toaster
+          position="top-center"
+          gap={10}
+          toastOptions={{
+            unstyled: true,
+            style: { padding: 0, margin: 0, background: "transparent", border: "none", boxShadow: "none" },
+          }}
+        />
+      </Web3WalletProvider>
     </QueryClientProvider>
   );
 }
