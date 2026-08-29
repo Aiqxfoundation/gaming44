@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { notify } from "@/lib/notify";
 import { useGetMiningStatus, useClaimGems, useStartMining } from "@workspace/api-client-react";
 import { formatGems } from "@/lib/utils";
-import { Clock, BarChart3, Pickaxe, Sparkles } from "lucide-react";
+import { Clock, BarChart3, Pickaxe, Sparkles, Zap, Gift, Coins, ChevronRight } from "lucide-react";
 import { useLocation } from "wouter";
 import { GemIcon } from "@/components/GemIcon";
 
@@ -638,6 +638,31 @@ export default function Mining() {
         )}
       </AnimatePresence>
 
+      {/* ════════ ECOSYSTEM ════════════════════════════════════════════════════ */}
+      <div className="pt-2 space-y-2">
+        <p className="text-[9px] uppercase tracking-[0.22em] text-white/22 font-semibold px-1 mb-1">Ecosystem</p>
+        <EcoCard icon={<Coins size={18} />} title="EIX Token" desc="Buy EIX & view wallet" onClick={() => setLocation("/eix")} />
+        <EcoCard icon={<Zap size={18} />} title="Power Cards" desc="Boost your mining power" onClick={() => setLocation("/power-cards")} />
+        <EcoCard icon={<Gift size={18} />} title="Airdrop Farming" desc="Earn partner tokens" onClick={() => setLocation("/airdrop")} />
+      </div>
+
     </div>
+  );
+}
+
+function EcoCard({ icon, title, desc, onClick }: { icon: React.ReactNode; title: string; desc: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="w-full flex items-center gap-3 rounded-2xl p-3.5 transition-all text-left"
+      style={{ background: "rgba(255,255,255,0.025)", border: "1px solid rgba(255,255,255,0.06)" }}>
+      <div className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+        style={{ background: "rgba(249,115,22,0.1)", border: "1px solid rgba(249,115,22,0.15)" }}>
+        <span style={{ color: "#f97316" }}>{icon}</span>
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-white">{title}</p>
+        <p className="text-[11px] text-white/30">{desc}</p>
+      </div>
+      <ChevronRight size={16} className="text-white/20 shrink-0" />
+    </button>
   );
 }

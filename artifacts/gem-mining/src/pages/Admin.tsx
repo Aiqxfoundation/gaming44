@@ -23,6 +23,7 @@ import {
   type AdminWithdrawalFull,
   type DepositAddress,
 } from "@workspace/api-client-react";
+import { AdminEixDeposits, AdminPowerCards, AdminApplications, AdminAirdropProjects } from "@/pages/AdminEixSections";
 import { formatCurrency, formatGems } from "@/lib/utils";
 import {
   Users, UserX, UserCheck, Gem, DollarSign, Repeat, Clock, CreditCard,

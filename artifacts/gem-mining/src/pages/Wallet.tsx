@@ -62,6 +62,8 @@ export default function Wallet() {
   const { data: deposits } = useGetDepositsFull();
   const { data: withdrawals } = useGetMyWithdrawals();
   const { data: conversions } = useGetMyConversions();
+  const { data: eixWallet } = useGetEixWallet();
+  const eixBalance = eixWallet?.eixBalance ?? 0;
 
   const gemsBalance = wallet?.gemsBalance ?? 0;
   const usdtBalance = wallet?.usdtBalance ?? 0;
@@ -158,6 +160,19 @@ export default function Wallet() {
             </div>
             <div className="text-right">
               <p className="text-base font-bold text-white tabular-nums">{formatGems(gemsBalance)}</p>
+            </div>
+          </button>
+
+          <button onClick={() => navigate("/eix")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
+            <div className="w-10 h-10 rounded-full bg-orange-500/15 flex items-center justify-center shrink-0">
+              <Coins size={20} className="text-orange-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold text-white">EthicX</p>
+              <p className="text-xs text-white/40">EIX</p>
+            </div>
+            <div className="text-right">
+              <p className="text-base font-bold text-white tabular-nums">{formatGems(Math.floor(eixBalance))}</p>
             </div>
           </button>
 

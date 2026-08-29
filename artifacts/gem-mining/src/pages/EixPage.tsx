@@ -23,6 +23,7 @@ const CURRENCIES = [
 ];
 
 export default function EixPage() {
+  const [, navigate] = useLocation();
   const queryClient = useQueryClient();
   const { data: eixWallet, isLoading } = useGetEixWallet();
   const { data: addresses } = useGetEixDepositAddresses();
@@ -120,6 +121,22 @@ export default function EixPage() {
         <StatChip icon={<Zap size={14} />} label="Power" value={formatGems(Math.floor(eixWallet?.powerCardPower ?? 0))} />
         <StatChip icon={<ArrowDownLeft size={14} />} label="Gems In" value={formatGems(Math.floor(eixWallet?.totalGemsContributed ?? 0))} />
         <StatChip icon={<Gift size={14} />} label="Rewards" value={formatGems(Math.floor(eixWallet?.totalAirdropRewards ?? 0))} />
+      </div>
+
+      {/* Ecosystem navigation */}
+      <div className="space-y-2">
+        <EcoLink
+          icon={<Zap size={18} />}
+          title="Power Cards"
+          desc="Unlock & upgrade cards to boost your mining power"
+          onClick={() => navigate("/power-cards")}
+        />
+        <EcoLink
+          icon={<Gift size={18} />}
+          title="Airdrop Farming"
+          desc="Contribute gems to earn partner tokens"
+          onClick={() => navigate("/airdrop")}
+        />
       </div>
 
       {/* Buy EIX form */}
@@ -254,6 +271,21 @@ export default function EixPage() {
         </div>
       )}
     </div>
+  );
+}
+
+function EcoLink({ icon, title, desc, onClick }: { icon: React.ReactNode; title: string; desc: string; onClick: () => void }) {
+  return (
+    <button onClick={onClick} className="w-full flex items-center gap-3 rounded-2xl bg-card border border-border p-4 hover:border-orange-500/40 transition-all text-left">
+      <div className="w-10 h-10 rounded-xl bg-orange-500/15 flex items-center justify-center text-orange-400 shrink-0">
+        {icon}
+      </div>
+      <div className="flex-1 min-w-0">
+        <p className="text-sm font-bold text-white">{title}</p>
+        <p className="text-xs text-white/40">{desc}</p>
+      </div>
+      <ChevronRight size={18} className="text-white/30 shrink-0" />
+    </button>
   );
 }
 

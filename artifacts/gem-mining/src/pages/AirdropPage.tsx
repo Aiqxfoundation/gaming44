@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 
 export default function AirdropPage() {
+  const [, navigate] = useLocation();
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [tab, setTab] = useState<"projects" | "rewards" | "history">("projects");
 
@@ -39,6 +40,20 @@ export default function AirdropPage() {
         <h1 className="text-2xl font-black text-white">Airdrop Farming</h1>
         <p className="text-xs text-white/40 mt-1">Mine Gems → Contribute to daily blocks → Earn partner tokens.</p>
       </motion.div>
+
+      <button
+        onClick={() => navigate("/projects/apply")}
+        className="w-full flex items-center gap-3 rounded-2xl border border-orange-500/20 p-4 hover:border-orange-500/40 transition-all text-left"
+        style={{ background: "linear-gradient(135deg, rgba(255,149,0,0.06), rgba(10,11,17,0.4))" }}
+      >
+        <div className="w-10 h-10 rounded-xl bg-orange-500/15 flex items-center justify-center text-orange-400 shrink-0">
+          <Rocket size={18} />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-bold text-white">List Your Project</p>
+          <p className="text-xs text-white/40">Apply to launch an airdrop campaign</p>
+        </div>
+      </button>
 
       <div className="flex rounded-xl bg-card border border-border p-1">
         {([["projects", "Projects"], ["rewards", "My Rewards"], ["history", "History"]] as const).map(([k, label]) => (

@@ -17,6 +17,10 @@ import Referral from "@/pages/Referral";
 import Profile from "@/pages/Profile";
 import Verify from "@/pages/Verify";
 import Admin from "@/pages/Admin";
+import EixPage from "@/pages/EixPage";
+import PowerCardsPage from "@/pages/PowerCardsPage";
+import AirdropPage from "@/pages/AirdropPage";
+import ProjectApplyPage from "@/pages/ProjectApplyPage";
 import NotFound from "@/pages/not-found";
 
 // Global fetch interceptor — injects JWT and handles 401s.
@@ -119,6 +123,10 @@ function Router() {
       <Route path="/referral"><RequireAuth component={Referral} /></Route>
       <Route path="/profile"><RequireAuth component={Profile} /></Route>
       <Route path="/verify"><RequireAuth component={Verify} /></Route>
+      <Route path="/eix"><RequireAuth component={EixPage} /></Route>
+      <Route path="/power-cards"><RequireAuth component={PowerCardsPage} /></Route>
+      <Route path="/airdrop"><RequireAuth component={AirdropPage} /></Route>
+      <Route path="/projects/apply"><RequireAuth component={ProjectApplyPage} /></Route>
       <Route path="/admin"><RequireAdmin component={Admin} /></Route>
 
       {/* Legacy redirects */}
