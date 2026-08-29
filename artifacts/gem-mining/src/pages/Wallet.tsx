@@ -13,7 +13,7 @@ import { EixLogo } from "@/components/EixLogo";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 import { format } from "date-fns";
 
-const PTC_LOGO  = "/images/etr-logo.png";
+const PTC_LOGO  = "/images/ptc-logo.png";
 const USDT_LOGO = "/images/usdt-logo.png";
 
 function ActionBtn({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {

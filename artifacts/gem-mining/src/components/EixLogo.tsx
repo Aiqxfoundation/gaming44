@@ -7,7 +7,7 @@ import React from "react";
 export function EixLogo({ size = 20, className }: { size?: number; className?: string }) {
   return (
     <img
-      src={`${import.meta.env.BASE_URL}images/logo-icon.png`}
+      src={`${import.meta.env.BASE_URL}images/eix-logo.png`}
       alt="EthicX"
       style={{ width: size, height: size, objectFit: "contain", flexShrink: 0 }}
       className={className}

@@ -9,7 +9,7 @@ import { formatGems, cn } from "@/lib/utils";
 import { ArrowDown, History, X, BarChart3, Zap, ArrowLeft, ArrowRight } from "lucide-react";
 import { GemIcon } from "@/components/GemIcon";
 
-const PTC_LOGO = "/images/etr-logo.png";
+const PTC_LOGO = "/images/ptc-logo.png";
 
 export default function Convert() {
   const [amount, setAmount]           = useState("");

@@ -12,7 +12,7 @@ import {
   ArrowLeft, ArrowUpRight, Send, X, Lock, ShieldCheck, ChevronRight, History
 } from "lucide-react";
 
-const PTC_LOGO = "/images/etr-logo.png";
+const PTC_LOGO = "/images/ptc-logo.png";
 
 function Sheet({ open, onClose, title, children }: {
   open: boolean; onClose: () => void; title: string; children: React.ReactNode;
