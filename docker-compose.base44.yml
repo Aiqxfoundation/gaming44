@@ -1,0 +1,77 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: devpassword
+      POSTGRES_DB: etr_gem_mining
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d etr_gem_mining"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  install:
+    image: node:24
+    working_dir: /app
+    volumes:
+      - .:/app
+      - pnpm-store:/pnpm-store
+    command: sh -c "corepack enable && corepack prepare pnpm@latest --activate && pnpm config set store-dir /pnpm-store && pnpm config set dangerously-allow-all-builds true && pnpm install"
+
+  migrate:
+    image: node:24
+    working_dir: /app/lib/db
+    volumes:
+      - .:/app
+      - pnpm-store:/pnpm-store
+    environment:
+      DATABASE_URL: postgres://app:devpassword@db:5432/etr_gem_mining
+    depends_on:
+      db:
+        condition: service_healthy
+      install:
+        condition: service_completed_successfully
+    command: sh -c "corepack enable && pnpm push-force"
+
+  api:
+    image: node:24
+    working_dir: /app/artifacts/api-server
+    volumes:
+      - .:/app
+      - pnpm-store:/pnpm-store
+    environment:
+      PORT: "8080"
+      DATABASE_URL: postgres://app:devpassword@db:5432/etr_gem_mining
+      SESSION_SECRET: dev-only-secret-change-in-production
+      ALLOWED_ORIGIN: "*"
+    ports:
+      - "8080:8080"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    command: sh -c "corepack enable && pnpm dev"
+
+  web:
+    image: node:24
+    working_dir: /app/artifacts/gem-mining
+    volumes:
+      - .:/app
+      - pnpm-store:/pnpm-store
+    environment:
+      PORT: "3000"
+      BASE_PATH: /
+      API_PROXY_TARGET: http://api:8080
+      CHOKIDAR_USEPOLLING: "true"
+    ports:
+      - "3000:3000"
+    depends_on:
+      install:
+        condition: service_completed_successfully
+    command: sh -c "corepack enable && pnpm dev"
+
+volumes:
+  pgdata:
+  pnpm-store:
