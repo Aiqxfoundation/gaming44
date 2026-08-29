@@ -1,20 +1,16 @@
 import React, { useMemo } from "react";
 import { useLocation } from "wouter";
 import { motion } from "framer-motion";
+import { format } from "date-fns";
 import {
-  useGetWallet, useGetDepositsFull, useGetMyWithdrawals, useGetMyConversions, useGetEixWallet
+  useGetWallet, useGetEixWallet, useGetEixDeposits, useGetMyAirdropRewards,
 } from "@workspace/api-client-react";
-import { formatCurrency, formatGems, cn } from "@/lib/utils";
+import { formatGems, cn } from "@/lib/utils";
 import {
-  ChevronRight, ShieldCheck, ArrowRightLeft, ArrowDownLeft, ArrowUpRight, Send, Lock, History
+  ChevronRight, ShieldCheck, Zap, Gift, Coins, ArrowDownLeft, History, Lock,
 } from "lucide-react";
 import { GemIcon } from "@/components/GemIcon";
 import { EixLogo } from "@/components/EixLogo";
-import { ConnectWalletButton } from "@/components/ConnectWalletButton";
-import { format } from "date-fns";
-
-const PTC_LOGO  = "/images/ptc-logo.png";
-const USDT_LOGO = "/images/usdt-logo.png";
 
 function ActionBtn({ icon, label, onClick }: { icon: React.ReactNode; label: string; onClick: () => void }) {
   return (
@@ -27,60 +23,23 @@ function ActionBtn({ icon, label, onClick }: { icon: React.ReactNode; label: str
   );
 }
 
-function TxRow({ title, subtitle, amount, amountUsd, isPositive, status }: any) {
-  return (
-    <div className="flex items-center gap-3 py-3 border-b border-white/[0.04] last:border-0">
-      <div className={cn(
-        "w-10 h-10 rounded-full flex items-center justify-center shrink-0",
-        isPositive ? "bg-emerald-500/10 text-emerald-400" : "bg-white/[0.04] text-white/50"
-      )}>
-        {isPositive ? <ArrowDownLeft size={16} /> : <ArrowUpRight size={16} />}
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-semibold text-white truncate">{title}</p>
-        <div className="flex items-center gap-2 mt-0.5">
-          <p className="text-xs text-white/40 truncate">{subtitle}</p>
-          {status && status !== 'approved' && (
-             <span className="text-[9px] uppercase tracking-widest font-bold px-1.5 py-0.5 rounded-sm bg-white/10 text-white/60">
-               {status}
-             </span>
-          )}
-        </div>
-      </div>
-      <div className="text-right shrink-0">
-        <p className={cn("text-sm font-bold font-mono", isPositive ? "text-emerald-400" : "text-white")}>
-          {isPositive ? "+" : ""}{amount}
-        </p>
-        {amountUsd && <p className="text-xs text-white/40 font-mono mt-0.5">{amountUsd}</p>}
-      </div>
-    </div>
-  );
-}
-
 export default function Wallet() {
   const [, navigate] = useLocation();
   const { data: wallet, isLoading } = useGetWallet();
-  
-  const { data: deposits } = useGetDepositsFull();
-  const { data: withdrawals } = useGetMyWithdrawals();
-  const { data: conversions } = useGetMyConversions();
   const { data: eixWallet } = useGetEixWallet();
+  const { data: eixDeposits } = useGetEixDeposits();
+  const { data: airdropRewards } = useGetMyAirdropRewards();
+
   const eixBalance = eixWallet?.eixBalance ?? 0;
-
+  const eixPrice = eixWallet?.eixPriceUsd ?? 10;
   const gemsBalance = wallet?.gemsBalance ?? 0;
-  const usdtBalance = wallet?.usdtBalance ?? 0;
-  const etrBalance  = wallet?.etrBalance ?? 0;
-  const isVerified  = (wallet as any)?.isVerified ?? false;
-  const totalUsd    = usdtBalance;
+  const powerCardPower = eixWallet?.powerCardPower ?? 0;
+  const totalAirdropRewards = eixWallet?.totalAirdropRewards ?? 0;
+  const isVerified = (wallet as any)?.isVerified ?? false;
 
-  const recentTx = useMemo(() => {
-    const all = [
-      ...(deposits || []).map((d: any) => ({ ...d, _type: 'deposit' })),
-      ...(withdrawals || []).map((w: any) => ({ ...w, _type: 'withdrawal' })),
-      ...(conversions || []).map((c: any) => ({ ...c, _type: 'conversion' }))
-    ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-    return all.slice(0, 5);
-  }, [deposits, withdrawals, conversions]);
+  const recentEixPurchases = useMemo(() => {
+    return (eixDeposits ?? []).slice().reverse().slice(0, 5);
+  }, [eixDeposits]);
 
   if (isLoading) {
     return (
@@ -91,143 +50,150 @@ export default function Wallet() {
   }
 
   return (
-    <div className="max-w-md mx-auto px-4 py-6 space-y-8 pb-24">
-      {/* Web3 wallet connection */}
-      <div className="flex justify-end pt-2">
-        <ConnectWalletButton />
-      </div>
+    <div className="max-w-md mx-auto px-4 py-6 space-y-6 pb-24">
 
-      {/* Total Balance */}
-      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="text-center pt-2">
-        <p className="text-xs font-bold text-white/40 uppercase tracking-widest mb-3">Total Balance</p>
-        <h1 className="text-5xl font-black text-white tracking-tighter tabular-nums">
-          {formatCurrency(totalUsd)}
-        </h1>
-        <div className="flex items-center justify-center gap-2 mt-4">
-          {isVerified ? (
-            <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <ShieldCheck size={12} className="text-emerald-400" />
-              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">Verified</span>
-            </div>
-          ) : (
-            <button onClick={() => navigate("/verify")} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/[0.05] border border-white/[0.08] hover:bg-white/[0.1] transition-colors">
-              <Lock size={12} className="text-white/40" />
-              <span className="text-[10px] font-bold text-white/50 uppercase tracking-widest">Unverified</span>
-            </button>
-          )}
+      {/* EIX Balance Hero */}
+      <motion.div
+        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+        className="relative overflow-hidden rounded-3xl p-6 border border-orange-500/20"
+        style={{ background: "linear-gradient(135deg, rgba(255,149,0,0.12) 0%, rgba(10,11,17,0.6) 60%)" }}
+      >
+        <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full blur-3xl pointer-events-none" style={{ background: "rgba(255,149,0,0.06)" }} />
+        <div className="relative">
+          <div className="flex items-center justify-between mb-1">
+            <span className="text-xs font-bold uppercase tracking-widest text-orange-400/80">EthicX • EIX</span>
+            <span className="text-[10px] text-white/40 font-mono">${(eixBalance * eixPrice).toFixed(2)} USD</span>
+          </div>
+          <div className="flex items-end gap-2 mt-2">
+            <EixLogo size={28} />
+            <span className="text-4xl font-black text-white font-mono">{formatGems(Math.floor(eixBalance))}</span>
+            <span className="text-lg font-bold text-orange-400 mb-1">EIX</span>
+          </div>
+          <p className="text-xs text-white/40 mt-1">Fixed value ${eixPrice.toFixed(2)} per EIX · Ecosystem Fuel</p>
+          <button
+            onClick={() => navigate("/eix")}
+            className="mt-4 w-full h-11 rounded-xl bg-gradient-to-r from-orange-500 to-orange-600 text-white font-bold text-sm flex items-center justify-center gap-2 hover:from-orange-600 hover:to-orange-700 transition-all"
+          >
+            <Coins size={16} /> Buy EIX
+          </button>
         </div>
       </motion.div>
 
       {/* Quick Actions */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}>
         <div className="flex items-start justify-center gap-5 px-2">
-          <ActionBtn icon={<ArrowDownLeft size={22} />} label="Deposit" onClick={() => navigate("/wallet/usdt/deposit")} />
-          <ActionBtn icon={<ArrowUpRight size={22} />} label="Withdraw" onClick={() => navigate("/wallet/usdt")} />
-          <ActionBtn icon={<Send size={22} />} label="Transfer" onClick={() => navigate("/wallet/etr")} />
-          <ActionBtn icon={<ArrowRightLeft size={22} />} label="Convert" onClick={() => navigate("/wallet/convert")} />
+          <ActionBtn icon={<Coins size={22} />} label="Buy EIX" onClick={() => navigate("/eix")} />
+          <ActionBtn icon={<Zap size={22} />} label="Power Cards" onClick={() => navigate("/power-cards")} />
+          <ActionBtn icon={<Gift size={22} />} label="Airdrop" onClick={() => navigate("/airdrop")} />
         </div>
       </motion.div>
 
-      {/* Assets */}
+      {/* Asset Cards */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
         <h2 className="text-sm font-bold text-white mb-3 px-1">Assets</h2>
         <div className="bg-[#0b0c10] border border-white/[0.06] rounded-3xl overflow-hidden p-2">
-          
-          <button onClick={() => navigate("/wallet/usdt")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left">
-            <img src={USDT_LOGO} alt="USDT" className="w-10 h-10 rounded-full shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-base font-bold text-white">Tether</p>
-              <p className="text-xs text-white/40">USDT</p>
-            </div>
-            <div className="text-right">
-              <p className="text-base font-bold text-white tabular-nums">{usdtBalance.toFixed(2)}</p>
-              <p className="text-xs text-white/40">{formatCurrency(usdtBalance)}</p>
-            </div>
-          </button>
 
-          <button onClick={() => navigate("/wallet/etr")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
-            <img src={PTC_LOGO} alt="PTC" className="w-10 h-10 rounded-full shrink-0" />
-            <div className="flex-1 min-w-0">
-              <p className="text-base font-bold text-white">Peridot</p>
-              <p className="text-xs text-white/40">PTC</p>
-            </div>
-            <div className="text-right">
-              <p className="text-base font-bold text-white tabular-nums">{etrBalance.toFixed(4)}</p>
-              <p className="text-xs text-white/40">—</p>
-            </div>
-          </button>
-
-          <button onClick={() => navigate("/wallet/convert")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
+          {/* Gems */}
+          <button onClick={() => navigate("/mining")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <GemIcon size={20} className="text-primary" />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-base font-bold text-white">Gems</p>
-              <p className="text-xs text-white/40">Convertible</p>
+              <p className="text-xs text-white/40">Mining reward · contribute to airdrops</p>
             </div>
             <div className="text-right">
               <p className="text-base font-bold text-white tabular-nums">{formatGems(gemsBalance)}</p>
             </div>
           </button>
 
-          <button onClick={() => navigate("/eix")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
+          {/* Power */}
+          <button onClick={() => navigate("/power-cards")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
             <div className="w-10 h-10 rounded-full bg-orange-500/15 flex items-center justify-center shrink-0">
-              <EixLogo size={24} />
+              <Zap size={18} className="text-orange-400" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-base font-bold text-white">EthicX</p>
-              <p className="text-xs text-white/40">EIX</p>
+              <p className="text-base font-bold text-white">Mining Power</p>
+              <p className="text-xs text-white/40">From Power Cards</p>
             </div>
             <div className="text-right">
-              <p className="text-base font-bold text-white tabular-nums">{formatGems(Math.floor(eixBalance))}</p>
+              <p className="text-base font-bold text-white tabular-nums">{formatGems(Math.floor(powerCardPower))}</p>
+            </div>
+          </button>
+
+          {/* Airdrop Rewards */}
+          <button onClick={() => navigate("/airdrop")} className="w-full flex items-center gap-3 p-3 rounded-2xl hover:bg-white/[0.04] transition-colors text-left mt-1">
+            <div className="w-10 h-10 rounded-full bg-emerald-500/10 flex items-center justify-center shrink-0">
+              <Gift size={18} className="text-emerald-400" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="text-base font-bold text-white">Airdrop Rewards</p>
+              <p className="text-xs text-white/40">Partner tokens earned</p>
+            </div>
+            <div className="text-right">
+              <p className="text-base font-bold text-white tabular-nums">{formatGems(Math.floor(totalAirdropRewards))}</p>
             </div>
           </button>
 
         </div>
       </motion.div>
 
-      {/* Verification nudge */}
-      {!isVerified && (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+      {/* Verification status */}
+      <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.15 }}>
+        {isVerified ? (
+          <div className="flex items-center gap-3 p-4 rounded-3xl bg-emerald-500/[0.06] border border-emerald-500/[0.12]">
+            <ShieldCheck size={20} className="text-emerald-400 shrink-0" />
+            <div className="flex-1">
+              <p className="text-sm font-bold text-white">Verified Miner</p>
+              <p className="text-xs text-white/40 mt-0.5">Full ecosystem access unlocked</p>
+            </div>
+          </div>
+        ) : (
           <button onClick={() => navigate("/verify")} className="w-full flex items-center gap-4 p-4 rounded-3xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.05] transition-colors text-left">
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <ShieldCheck size={20} className="text-primary" />
+              <Lock size={18} className="text-primary" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-bold text-white">Complete Verification</p>
-              <p className="text-xs text-white/40 mt-0.5">Unlock withdrawals and transfers</p>
+              <p className="text-sm font-bold text-white">Mint Verification Badge</p>
+              <p className="text-xs text-white/40 mt-0.5">Unlock full ecosystem access · 20 EIX</p>
             </div>
             <ChevronRight size={18} className="text-white/20" />
           </button>
-        </motion.div>
-      )}
+        )}
+      </motion.div>
 
-      {/* Recent History */}
+      {/* Recent EIX Purchases */}
       <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-        <h2 className="text-sm font-bold text-white mb-3 px-1">Recent Transactions</h2>
-        {recentTx.length === 0 ? (
+        <h2 className="text-sm font-bold text-white mb-3 px-1">Recent EIX Purchases</h2>
+        {recentEixPurchases.length === 0 ? (
           <div className="text-center py-10 bg-[#0b0c10] border border-white/[0.06] rounded-3xl">
             <History size={24} className="mx-auto text-white/20 mb-2" />
-            <p className="text-sm text-white/40">No transactions yet</p>
+            <p className="text-sm text-white/40">No EIX purchases yet</p>
+            <button onClick={() => navigate("/eix")} className="mt-2 text-xs text-orange-400 font-bold">Buy your first EIX →</button>
           </div>
         ) : (
-          <div className="bg-[#0b0c10] border border-white/[0.06] rounded-3xl p-4">
-            {recentTx.map((tx: any, i) => {
-              const d = format(new Date(tx.createdAt), "MMM d, HH:mm");
-              if (tx._type === 'deposit') {
-                return <TxRow key={i} title="Deposit USDT" subtitle={d} amount={tx.amountUsdt.toFixed(2)} amountUsd={formatCurrency(tx.amountUsdt)} isPositive status={tx.status} />;
-              }
-              if (tx._type === 'withdrawal') {
-                return <TxRow key={i} title={`Withdraw ${tx.currency.toUpperCase()}`} subtitle={d} amount={tx.amount.toFixed(4)} isPositive={false} status={tx.status} />;
-              }
-              if (tx._type === 'conversion') {
-                return <TxRow key={i} title="Convert Gems" subtitle={d} amount={tx.outputAmount.toFixed(4)} isPositive status="approved" />;
-              }
-              return null;
-            })}
+          <div className="bg-[#0b0c10] border border-white/[0.06] rounded-3xl p-4 space-y-3">
+            {recentEixPurchases.map((d) => (
+              <div key={d.id} className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-500/10 flex items-center justify-center shrink-0">
+                  <ArrowDownLeft size={16} className="text-orange-400" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-white font-mono">{d.eixAmount.toFixed(2)} EIX</p>
+                  <p className="text-xs text-white/40">{format(new Date(d.createdAt), "MMM d, HH:mm")} · {d.currency.toUpperCase()}</p>
+                </div>
+                <span className={cn(
+                  "text-[10px] uppercase tracking-widest font-bold px-2 py-1 rounded",
+                  d.status === "approved" && "bg-emerald-500/15 text-emerald-400",
+                  d.status === "pending" && "bg-orange-500/15 text-orange-400",
+                  d.status === "rejected" && "bg-red-500/15 text-red-400",
+                )}>{d.status}</span>
+              </div>
+            ))}
           </div>
         )}
       </motion.div>
+
     </div>
   );
 }

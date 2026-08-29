@@ -10,10 +10,10 @@ import { EixLogo } from "@/components/EixLogo";
 const COST = 20;
 
 const BENEFITS = [
-  "USDT withdrawals unlocked",
-  "PTC transfers to other users",
+  "Full ecosystem access unlocked",
+  "Partner token rewards claimable",
   "Verified badge on your profile",
-  "Priority withdrawal processing",
+  "Referral commission payouts enabled",
 ];
 
 export default function Verify() {

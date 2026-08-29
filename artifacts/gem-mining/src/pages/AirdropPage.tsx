@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { notify } from "@/lib/notify";
@@ -14,7 +15,7 @@ import {
   useGetEixWallet,
 } from "@workspace/api-client-react";
 import {
-  ArrowLeft, Gift, Clock, Gem, TrendingUp, Trophy, Send, Sparkles, Check,
+  ArrowLeft, Gift, Clock, Gem, TrendingUp, Trophy, Send, Sparkles, Check, Rocket,
 } from "lucide-react";
 
 export default function AirdropPage() {

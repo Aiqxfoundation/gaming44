@@ -8,12 +8,7 @@ import { Layout } from "@/components/Layout";
 import { Web3WalletProvider } from "@/lib/web3Wallet";
 import Auth from "@/pages/Auth";
 import Mining from "@/pages/Mining";
-import Levels from "@/pages/Levels";
-import Convert from "@/pages/Convert";
 import Wallet from "@/pages/Wallet";
-import UsdtPage from "@/pages/UsdtPage";
-import EtrPage from "@/pages/EtrPage";
-import DepositFlow from "@/pages/DepositFlow";
 import Referral from "@/pages/Referral";
 import Profile from "@/pages/Profile";
 import Verify from "@/pages/Verify";
@@ -110,17 +105,9 @@ function Router() {
       <Route path="/signup"><Auth mode="signup" /></Route>
       <Route path="/recovery"><Auth mode="recovery" /></Route>
 
-      {/* Wallet sub-routes (more specific first) */}
-      <Route path="/wallet/usdt/deposit"><RequireAuth component={DepositFlow} /></Route>
-      <Route path="/wallet/usdt"><RequireAuth component={UsdtPage} /></Route>
-      <Route path="/wallet/etr"><RequireAuth component={EtrPage} /></Route>
-      <Route path="/wallet"><RequireAuth component={Wallet} /></Route>
-
-      {/* Other protected routes */}
+      {/* Protected routes */}
       <Route path="/mining"><RequireAuth component={Mining} /></Route>
-      <Route path="/levels"><RequireAuth component={Levels} /></Route>
-      <Route path="/wallet/convert"><RequireAuth component={Convert} /></Route>
-      <Route path="/convert"><Redirect to="/wallet/convert" /></Route>
+      <Route path="/wallet"><RequireAuth component={Wallet} /></Route>
       <Route path="/referral"><RequireAuth component={Referral} /></Route>
       <Route path="/profile"><RequireAuth component={Profile} /></Route>
       <Route path="/verify"><RequireAuth component={Verify} /></Route>
@@ -131,9 +118,15 @@ function Router() {
       <Route path="/admin"><RequireAdmin component={Admin} /></Route>
 
       {/* Legacy redirects */}
-      <Route path="/wallet/deposit-address"><Redirect to="/wallet/usdt/deposit" /></Route>
-      <Route path="/wallet/receive"><Redirect to="/wallet/usdt/deposit" /></Route>
-      <Route path="/deposit"><Redirect to="/wallet/usdt/deposit" /></Route>
+      <Route path="/levels"><Redirect to="/power-cards" /></Route>
+      <Route path="/convert"><Redirect to="/wallet" /></Route>
+      <Route path="/wallet/convert"><Redirect to="/wallet" /></Route>
+      <Route path="/wallet/usdt"><Redirect to="/eix" /></Route>
+      <Route path="/wallet/usdt/deposit"><Redirect to="/eix" /></Route>
+      <Route path="/wallet/etr"><Redirect to="/wallet" /></Route>
+      <Route path="/wallet/deposit-address"><Redirect to="/eix" /></Route>
+      <Route path="/wallet/receive"><Redirect to="/eix" /></Route>
+      <Route path="/deposit"><Redirect to="/eix" /></Route>
       <Route path="/withdraw"><Redirect to="/wallet" /></Route>
       <Route path="/dashboard"><Redirect to="/mining" /></Route>
       <Route path="/"><Redirect to="/mining" /></Route>

@@ -13,7 +13,7 @@ import {
   useClaimEixReferral,
 } from "@workspace/api-client-react";
 import {
-  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, ChevronRight,
+  ArrowDownLeft, Copy, Check, Zap, Users, Gift, Clock, Hash, ChevronRight, Coins,
 } from "lucide-react";
 import { ConnectWalletButton } from "@/components/ConnectWalletButton";
 import { EixLogo } from "@/components/EixLogo";
@@ -104,7 +104,7 @@ export default function EixPage() {
       >
         <div className="flex items-center justify-between mb-1">
           <span className="text-xs font-bold uppercase tracking-widest text-orange-400/80">EthicX • EIX</span>
-          <span className="text-[10px] text-white/40 font-mono">Base Currency</span>
+          <span className="text-[10px] text-white/40 font-mono">Ecosystem Fuel</span>
         </div>
         <div className="flex items-end gap-2 mt-2">
           <span className="text-4xl font-black text-white font-mono">{formatGems(Math.floor(eixBalance))}</span>
@@ -140,6 +140,31 @@ export default function EixPage() {
           desc="Contribute gems to earn partner tokens"
           onClick={() => navigate("/airdrop")}
         />
+      </div>
+
+      {/* Revenue & Project Funding */}
+      <div className="rounded-2xl bg-card border border-border p-4">
+        <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+          <Coins size={15} className="text-orange-400" /> Revenue & Project Funding
+        </h3>
+        <p className="text-xs text-white/40 mb-3">Where EIX ecosystem revenue goes</p>
+        <div className="space-y-2">
+          {[
+            { label: "Project Funding", desc: "Partner project airdrop rewards" },
+            { label: "Ecosystem Resources", desc: "Infrastructure & operations" },
+            { label: "Development", desc: "Platform & feature building" },
+            { label: "Marketing", desc: "Growth & community outreach" },
+            { label: "Partnerships", desc: "Strategic ecosystem expansion" },
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-3 rounded-xl bg-white/[0.02] border border-white/[0.04] px-3 py-2.5">
+              <div className="w-2 h-2 rounded-full bg-orange-400 shrink-0" />
+              <div className="flex-1">
+                <p className="text-xs font-bold text-white">{item.label}</p>
+                <p className="text-[10px] text-white/35">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* Buy EIX form */}

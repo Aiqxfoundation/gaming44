@@ -2,7 +2,7 @@ import React from "react";
 import { Link, useLocation } from "wouter";
 import {
   Pickaxe, Wallet, Users, UserCircle,
-  ShieldAlert, LogOut, Layers,
+  ShieldAlert, LogOut, Zap,
 } from "lucide-react";
 import { cn, formatGems } from "@/lib/utils";
 import { useGetWallet, useLogout } from "@workspace/api-client-react";
@@ -11,11 +11,11 @@ import { GemIcon } from "./GemIcon";
 import { useEixBalanceSync } from "@/hooks/useEixBalanceSync";
 
 const BOTTOM_TABS = [
-  { href: "/mining",   label: "Mine",    icon: Pickaxe },
-  { href: "/levels",   label: "Levels",  icon: Layers },
-  { href: "/wallet",   label: "Wallet",  icon: Wallet },
-  { href: "/referral", label: "Team",    icon: Users },
-  { href: "/profile",  label: "Profile", icon: UserCircle },
+  { href: "/mining",      label: "Mine",    icon: Pickaxe },
+  { href: "/power-cards", label: "Cards",   icon: Zap },
+  { href: "/wallet",      label: "Wallet",  icon: Wallet },
+  { href: "/referral",    label: "Team",    icon: Users },
+  { href: "/profile",     label: "Profile", icon: UserCircle },
 ];
 
 export function Layout({ children, user }: { children: React.ReactNode; user: UserProfile }) {

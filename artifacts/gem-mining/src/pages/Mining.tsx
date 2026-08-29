@@ -498,7 +498,7 @@ export default function Mining() {
         </motion.button>
 
         <p className="text-[10px] text-white/20 text-center">
-          Free users earn gems in 3-hour sessions · Peridot Mining
+          Free users earn gems in 3-hour sessions · EthicX Mining
         </p>
       </div>
     );
