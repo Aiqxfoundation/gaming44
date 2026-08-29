@@ -6,3 +6,7 @@ export * from "./withdrawals";
 export * from "./system";
 export * from "./level_unlocks";
 export * from "./referral_rewards";
+export * from "./eix_deposits";
+export * from "./power_cards";
+export * from "./airdrop";
+export * from "./eix_referrals";

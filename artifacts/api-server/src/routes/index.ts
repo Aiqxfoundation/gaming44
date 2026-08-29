@@ -12,6 +12,12 @@ import adminRouter from "./admin.js";
 import levelsRouter from "./levels.js";
 import kycRouter from "./kyc.js";
 import verifyRouter from "./verify.js";
+import eixRouter from "./eix.js";
+import powerCardsRouter from "./powerCards.js";
+import airdropRouter from "./airdrop.js";
+import projectsRouter from "./projects.js";
+import adminEixRouter from "./adminEix.js";
+import adminAirdropRouter from "./adminAirdrop.js";
 
 const router: IRouter = Router();
 
@@ -25,8 +31,14 @@ router.use("/referrals", referralsRouter);
 router.use("/withdrawals", withdrawalsRouter);
 router.use("/system", systemRouter);
 router.use("/admin", adminRouter);
+router.use("/admin", adminEixRouter);
+router.use("/admin", adminAirdropRouter);
 router.use("/levels", levelsRouter);
 router.use("/kyc", kycRouter);
 router.use("/verify", verifyRouter);
+router.use("/eix", eixRouter);
+router.use("/power-cards", powerCardsRouter);
+router.use("/airdrop", airdropRouter);
+router.use("/projects", projectsRouter);
 
 export default router;

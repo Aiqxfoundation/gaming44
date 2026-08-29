@@ -191,7 +191,8 @@ export function calculatePendingGems(
   currentLevel: number,
   totalMiningPower: number,
   miningStartedAt: Date,
-  lastClaimedAt: Date | null
+  lastClaimedAt: Date | null,
+  powerCardPower = 0
 ): number {
   const now = new Date();
   const sessionStartedAt = lastClaimedAt ?? miningStartedAt;
@@ -203,8 +204,13 @@ export function calculatePendingGems(
   const msElapsed = effectiveNow.getTime() - sessionStartedAt.getTime();
   const daysElapsed = msElapsed / 86_400_000;
 
+  // Power Cards add a bonus daily gem rate on top of the base mining rate.
+  // Additive & backward-compatible: powerCardPower defaults to 0, so users
+  // without Power Cards see no change in their existing mining output.
+  const powerCardDailyGems = powerCardPower * BASE_DAILY_GEMS_PER_USDT;
+
   if (currentLevel === 0) {
-    return daysElapsed * FREE_USER_DAILY_GEMS;
+    return daysElapsed * (FREE_USER_DAILY_GEMS + powerCardDailyGems);
   }
 
   const totalDaysSinceStart =
@@ -213,7 +219,7 @@ export function calculatePendingGems(
   const effectiveDays = Math.min(daysElapsed, daysLeft);
 
   const multiplier = getLevelMultiplier(currentLevel);
-  return effectiveDays * totalMiningPower * BASE_DAILY_GEMS_PER_USDT * multiplier;
+  return effectiveDays * (totalMiningPower + powerCardPower) * BASE_DAILY_GEMS_PER_USDT * multiplier;
 }
 
 // ─── Conversion Helpers ───────────────────────────────────────────────────────

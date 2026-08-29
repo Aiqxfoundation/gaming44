@@ -13,6 +13,7 @@ import {
   getSessionDurationMs,
   getLevelMultiplier,
 } from "../lib/mining.js";
+import { getPowerCardPower } from "../lib/powerCards.js";
 
 const router = Router();
 
@@ -63,6 +64,7 @@ router.get("/status", requireAuth, async (req, res) => {
     }
 
     const { totalMiningPower } = await getUserLevelData(user.id);
+    const powerCardPower = await getPowerCardPower(user.id);
 
     const currentLevel: number = user.currentLevel ?? 0;
     const isFreeUser = currentLevel === 0;
@@ -71,12 +73,14 @@ router.get("/status", requireAuth, async (req, res) => {
       currentLevel,
       totalMiningPower,
       user.miningStartedAt,
-      user.lastClaimedAt
+      user.lastClaimedAt,
+      powerCardPower
     );
 
+    const powerCardDailyGems = powerCardPower * DAILY_GEMS_PER_USDT;
     const dailyRate = isFreeUser
-      ? FREE_USER_DAILY_GEMS
-      : totalMiningPower * DAILY_GEMS_PER_USDT * getLevelMultiplier(currentLevel);
+      ? FREE_USER_DAILY_GEMS + powerCardDailyGems
+      : (totalMiningPower + powerCardPower) * DAILY_GEMS_PER_USDT * getLevelMultiplier(currentLevel);
 
     const now = new Date();
     const totalDaysSinceStart =
@@ -111,6 +115,7 @@ router.get("/status", requireAuth, async (req, res) => {
       gemsBalance: user.gemsBalance,
       pendingGems: Math.floor(pendingGems),
       totalMiningPower,
+      powerCardPower,
       totalDepositUsdt: user.totalDepositUsdt,
       dailyRate: Math.floor(dailyRate),
       miningStartedAt: user.miningStartedAt.toISOString(),
@@ -164,6 +169,7 @@ router.post("/claim", requireAuth, async (req, res) => {
     }
 
     const { totalMiningPower } = await getUserLevelData(user.id);
+    const powerCardPower = await getPowerCardPower(user.id);
     const currentLevel: number = user.currentLevel ?? 0;
 
     // Enforce: session must have ended before claiming
@@ -187,7 +193,8 @@ router.post("/claim", requireAuth, async (req, res) => {
       currentLevel,
       totalMiningPower,
       user.miningStartedAt,
-      user.lastClaimedAt
+      user.lastClaimedAt,
+      powerCardPower
     );
 
     if (pendingGems < 1) {

@@ -30,7 +30,7 @@ import {
   X, ToggleLeft, ToggleRight, ChevronDown, ChevronUp,
 } from "lucide-react";
 
-type Tab = "stats" | "users" | "deposits" | "withdrawals" | "addresses";
+type Tab = "stats" | "users" | "deposits" | "withdrawals" | "addresses" | "eix" | "powercards" | "applications" | "airdrops";
 
 export default function Admin() {
   const [tab, setTab] = useState<Tab>("stats");
@@ -41,6 +41,10 @@ export default function Admin() {
     { key: "deposits", label: "Deposits" },
     { key: "withdrawals", label: "Withdrawals" },
     { key: "addresses", label: "Addresses" },
+    { key: "eix", label: "EIX Deposits" },
+    { key: "powercards", label: "Power Cards" },
+    { key: "applications", label: "Applications" },
+    { key: "airdrops", label: "Airdrops" },
   ];
 
   return (
