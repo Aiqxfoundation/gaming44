@@ -3,10 +3,10 @@ import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { notify } from "@/lib/notify";
-import { useGetWallet, useGetMe } from "@workspace/api-client-react";
+import { useGetWallet, useGetMe, useGetEixWallet } from "@workspace/api-client-react";
 import { ArrowLeft, ShieldCheck, Check, ArrowRight, AlertCircle } from "lucide-react";
+import { EixLogo } from "@/components/EixLogo";
 
-const ETR_LOGO = "/images/etr-logo.png";
 const COST = 20;
 
 const BENEFITS = [
@@ -21,15 +21,16 @@ export default function Verify() {
   const queryClient = useQueryClient();
   const { data: wallet } = useGetWallet();
   const { data: user } = useGetMe();
+  const { data: eixWallet } = useGetEixWallet();
 
-  const etrBalance = wallet?.etrBalance ?? 0;
+  const eixBalance = eixWallet?.eixBalance ?? 0;
   const isVerified = (wallet as any)?.isVerified ?? (user as any)?.isKycVerified ?? false;
 
   const [confirming, setConfirming] = useState(false);
   const [isPaying, setIsPaying] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  const canAfford = etrBalance >= COST;
+  const canAfford = eixBalance >= COST;
 
   const handleMint = async () => {
     setIsPaying(true);
@@ -140,15 +141,15 @@ export default function Verify() {
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white/50">One-time fee</span>
                 <div className="flex items-center gap-2">
-                  <img src={ETR_LOGO} alt="PTC" className="w-5 h-5 rounded-full" />
-                  <span className="text-lg font-black text-white">{COST} PTC</span>
+                  <EixLogo size={20} />
+                  <span className="text-lg font-black text-white">{COST} EIX</span>
                 </div>
               </div>
               <div className="h-px bg-white/[0.06]" />
               <div className="flex items-center justify-between">
                 <span className="text-sm text-white/40">Your balance</span>
                 <span className={`text-sm font-bold ${canAfford ? "text-white" : "text-white/40"}`}>
-                  {etrBalance.toFixed(4)} PTC
+                  {eixBalance.toFixed(4)} EIX
                   {canAfford && <span className="text-primary ml-2">✓</span>}
                 </span>
               </div>
@@ -157,8 +158,8 @@ export default function Verify() {
                 <div className="flex items-start gap-2.5 p-3.5 rounded-xl bg-white/[0.03] border border-white/[0.06] mt-1">
                   <AlertCircle size={13} className="text-white/30 shrink-0 mt-0.5" />
                   <p className="text-xs text-white/40 leading-relaxed">
-                    You need {(COST - etrBalance).toFixed(4)} more PTC.
-                    Convert your Gems in <button onClick={() => navigate("/wallet/convert")} className="text-primary underline">Wallet → Convert Gems</button> to earn PTC.
+                    You need {(COST - eixBalance).toFixed(4)} more EIX.
+                    <button onClick={() => navigate("/eix")} className="text-primary underline">Buy EIX</button> to top up your balance.
                   </p>
                 </div>
               )}
@@ -171,13 +172,13 @@ export default function Verify() {
                 disabled={!canAfford}
                 className="w-full py-4 rounded-xl bg-primary text-black font-bold text-sm disabled:opacity-30 disabled:cursor-not-allowed hover:brightness-105 transition-all"
               >
-                Mint Verification Badge — {COST} PTC
+                Mint Verification Badge — {COST} EIX
               </button>
             ) : (
               <div className="space-y-3">
                 <div className="rounded-xl p-4 bg-white/[0.04] border border-white/[0.08] text-center">
                   <p className="text-sm text-white/70 leading-relaxed">
-                    Confirm deduction of <strong className="text-white">{COST} PTC</strong> from your balance to mint the Verification Badge?
+                    Confirm deduction of <strong className="text-white">{COST} EIX</strong> from your balance to mint the Verification Badge?
                   </p>
                 </div>
                 <div className="grid grid-cols-2 gap-2.5">
